@@ -6,7 +6,7 @@
 
 #### Start MySQL (first run)
 
-```console
+```zsh
 > docker run --name mysql -td -p 3306:3306 -e MYSQL_ROOT_PASSWORD=password mysql:8.0
 ```
 
@@ -15,7 +15,7 @@ via MySQL Workbench.
 
 #### Start MySQL (subsequent runs)
 
-```console
+```zsh
 > docker start mysql
 ```
 
@@ -23,20 +23,20 @@ via MySQL Workbench.
 
 1. Get a shell to the MySQL container
 
-```console
+```zsh
 > docker exec -t mysql bash
 ```
 
 2. Connect to MySQL, password should be `password`
 
-```console
+```zsh
 root@b780cabe0641:/# mysql --password
 Enter password:
 ```
 
 3. Run the commands from `create-database-and-default-user.sql` manually
 
-```console
+```zsh
 mysql> CREATE DATABASE db;
 Query OK, 1 row affected (0.01 sec)
 
@@ -49,7 +49,7 @@ Query OK, 0 rows affected (0.00 sec)
 
 4. Exit MySQL and the container shell
 
-```console
+```zsh
 mysql> exit
 Bye
 root@b780cabe0641:/# exit
@@ -72,17 +72,27 @@ exit
 
 ### Build, run the Spring Boot App
 
-```console
+```zsh
 > cd backend
 > gradle build # build the app
 > gradle bootRun # run the app
 ```
 
-Note: MySQL must be running in order to build the project
+Note: MySQL must be running in order to build the project, as :
+- tests will be run automatically,
+- `BackendApplicationTests` will start a Spring application context, and
+- an instance of MySQL is required at runtime
+
+Alternatively, build the app without testing as follows:
+
+```zsh
+> cd backend
+> gradle build -x test
+```
 
 ### Stop MySQL
 
-```console
+```zsh
 > docker stop mysql
 ```
 
