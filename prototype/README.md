@@ -36,17 +36,6 @@ Enter password:
 
 3. Run the commands from `create-database-and-default-user.sql` manually
 
-```zsh
-mysql> CREATE DATABASE db;
-Query OK, 1 row affected (0.01 sec)
-
-mysql> CREATE USER 'username'@'%' IDENTIFIED BY 'password';
-Query OK, 0 rows affected (0.00 sec)
-
-mysql> GRANT ALL ON db.* TO 'username'@'%';
-Query OK, 0 rows affected (0.00 sec)
-```
-
 4. Exit MySQL and the container shell
 
 ```zsh
@@ -79,6 +68,7 @@ exit
 ```
 
 Note: MySQL must be running in order to build the project, as :
+
 - tests will be run automatically,
 - `BackendApplicationTests` will start a Spring application context, and
 - an instance of MySQL is required at runtime
