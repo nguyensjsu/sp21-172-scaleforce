@@ -37,17 +37,33 @@ public class TodoControllerTest {
   }
 
   @Test
-  void getTodos_noTodos() throws Exception {
+  void getTodos() throws Exception {
     mockMvc
         .perform(get("/todos"))
-        .andExpect(status().isNotFound());
+        .andExpect(status().isOk())
+        .andExpect(jsonPath(("$[0]")).exists())
+        .andExpect(jsonPath(("$[0].isCompleted")).exists())
+        .andExpect(jsonPath("$[0].isCompleted").value(false))
+        .andExpect(jsonPath(("$[0].title")).exists())
+        .andExpect(jsonPath("$[0].title").value("Finish prototype"))
+        .andExpect(jsonPath(("$[0].description")).exists())
+        .andExpect(jsonPath("$[0].description").value(
+            "Need to research deploying a React app to GKE"));
   }
 
   @Test
-  void getTodo_noTodos() throws Exception {
+  void getTodo() throws Exception {
     mockMvc
-        .perform(get("/todos"))
-        .andExpect(status().isNotFound());
+        .perform(get("/todos/{id}", 1))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath(("$")).exists())
+        .andExpect(jsonPath(("$.isCompleted")).exists())
+        .andExpect(jsonPath("$.isCompleted").value(false))
+        .andExpect(jsonPath(("$.title")).exists())
+        .andExpect(jsonPath("$.title").value("Finish prototype"))
+        .andExpect(jsonPath(("$.description")).exists())
+        .andExpect(jsonPath("$.description").value(
+            "Need to research deploying a React app to GKE"));
   }
 
   @Test
@@ -62,7 +78,7 @@ public class TodoControllerTest {
   @Test
   @DirtiesContext
   void postTodo() throws Exception {
-    Todo todo = new Todo("sample description", "sample title");
+    Todo todo = new Todo("sample title", "sample description");
 
     mockMvc
         .perform(
@@ -72,16 +88,16 @@ public class TodoControllerTest {
         .andExpect(status().isCreated())
         .andExpect(jsonPath(("$.isCompleted")).exists())
         .andExpect(jsonPath("$.isCompleted").value(false))
-        .andExpect(jsonPath(("$.description")).exists())
-        .andExpect(jsonPath("$.description").value("sample description"))
         .andExpect(jsonPath(("$.title")).exists())
-        .andExpect(jsonPath("$.title").value("sample title"));
+        .andExpect(jsonPath("$.title").value("sample title"))
+        .andExpect(jsonPath(("$.description")).exists())
+        .andExpect(jsonPath("$.description").value("sample description"));
   }
 
   @Test
   @DirtiesContext
   void postTodoGetTodos() throws Exception {
-    Todo todo = new Todo("sample description", "sample title");
+    Todo todo = new Todo("sample title", "sample description");
 
     mockMvc
         .perform(
@@ -93,19 +109,19 @@ public class TodoControllerTest {
     mockMvc
         .perform(get("/todos"))
         .andExpect(status().isOk())
-        .andExpect(jsonPath(("$[0]")).exists())
-        .andExpect(jsonPath(("$[0].isCompleted")).exists())
-        .andExpect(jsonPath("$[0].isCompleted").value(false))
-        .andExpect(jsonPath(("$[0].description")).exists())
-        .andExpect(jsonPath("$[0].description").value("sample description"))
-        .andExpect(jsonPath(("$[0].title")).exists())
-        .andExpect(jsonPath("$[0].title").value("sample title"));
+        .andExpect(jsonPath(("$[1]")).exists())
+        .andExpect(jsonPath(("$[1].isCompleted")).exists())
+        .andExpect(jsonPath("$[1].isCompleted").value(false))
+        .andExpect(jsonPath(("$[1].title")).exists())
+        .andExpect(jsonPath("$[1].title").value("sample title"))
+        .andExpect(jsonPath(("$[1].description")).exists())
+        .andExpect(jsonPath("$[1].description").value("sample description"));
   }
 
   @Test
   @DirtiesContext
   void postTodoGetTodo() throws Exception {
-    Todo todo = new Todo("sample description", "sample title");
+    Todo todo = new Todo("sample title", "sample description");
 
     mockMvc
         .perform(
@@ -115,14 +131,14 @@ public class TodoControllerTest {
         .andExpect(status().isCreated());
 
     mockMvc
-        .perform(get("/todos/{id}", 1))
+        .perform(get("/todos/{id}", 2))
         .andExpect(status().isOk())
         .andExpect(jsonPath(("$.isCompleted")).exists())
         .andExpect(jsonPath("$.isCompleted").value(false))
-        .andExpect(jsonPath(("$.description")).exists())
-        .andExpect(jsonPath("$.description").value("sample description"))
         .andExpect(jsonPath(("$.title")).exists())
-        .andExpect(jsonPath("$.title").value("sample title"));
+        .andExpect(jsonPath("$.title").value("sample title"))
+        .andExpect(jsonPath(("$.description")).exists())
+        .andExpect(jsonPath("$.description").value("sample description"));
   }
 
   @Test
@@ -135,11 +151,11 @@ public class TodoControllerTest {
 
   @Test
   @DirtiesContext
-  void patchTodo_noTodos() throws Exception {
+  void patchTodo_missingTodo() throws Exception {
     Map<String, Object> requestBody = new HashMap<>();
 
     mockMvc
-        .perform(patch("/todos/{id}", 1)
+        .perform(patch("/todos/{id}", 2)
             .contentType(MediaType.APPLICATION_JSON)
             .content(asJsonString(requestBody)))
         .andExpect(status().isNotFound());
@@ -148,7 +164,7 @@ public class TodoControllerTest {
   @Test
   @DirtiesContext
   void patchTodo_UpdateIsCompleted() throws Exception {
-    Todo todo = new Todo("sample description", "sample title");
+    Todo todo = new Todo("sample title", "sample description");
 
     mockMvc
         .perform(
@@ -161,7 +177,7 @@ public class TodoControllerTest {
     requestBody.put("isCompleted", true);
 
     mockMvc
-        .perform(patch("/todos/{id}", 1)
+        .perform(patch("/todos/{id}", 2)
             .contentType(MediaType.APPLICATION_JSON)
             .content(asJsonString(requestBody)))
         .andExpect(status().isOk())
@@ -172,7 +188,7 @@ public class TodoControllerTest {
   @Test
   @DirtiesContext
   void patchTodo_UpdateDescription() throws Exception {
-    Todo todo = new Todo("sample description", "sample title");
+    Todo todo = new Todo("sample title", "sample description");
 
     mockMvc
         .perform(
@@ -196,7 +212,7 @@ public class TodoControllerTest {
   @Test
   @DirtiesContext
   void patchTodo_UpdateTitle() throws Exception {
-    Todo todo = new Todo("sample description", "sample title");
+    Todo todo = new Todo("sample title", "sample description");
 
     mockMvc
         .perform(
@@ -209,7 +225,7 @@ public class TodoControllerTest {
     requestBody.put("title", "new title");
 
     mockMvc
-        .perform(patch("/todos/{id}", 1)
+        .perform(patch("/todos/{id}", 2)
             .contentType(MediaType.APPLICATION_JSON)
             .content(asJsonString(requestBody)))
         .andExpect(status().isOk())
@@ -221,7 +237,7 @@ public class TodoControllerTest {
   @DirtiesContext
   void deleteTodo_noTodos() throws Exception {
     mockMvc
-        .perform(delete("/todos/{id}", 1))
+        .perform(delete("/todos/{id}", 2))
         .andExpect(status().isNotFound());
   }
 
@@ -238,7 +254,7 @@ public class TodoControllerTest {
         .andExpect(status().isCreated());
 
     mockMvc
-        .perform(delete("/todos/{id}", 1))
+        .perform(delete("/todos/{id}", 2))
         .andExpect(status().isOk());
   }
 }

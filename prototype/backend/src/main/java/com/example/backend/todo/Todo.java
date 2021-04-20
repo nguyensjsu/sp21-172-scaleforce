@@ -22,8 +22,8 @@ public class Todo {
   protected Todo() {
   }
 
-  public Todo(String description, String title) {
-    this.description = description;
+  public Todo(String title, String description) {
     this.title = title;
+    this.description = description;
   }
 }
