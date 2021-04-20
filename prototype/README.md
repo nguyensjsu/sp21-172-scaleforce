@@ -2,123 +2,191 @@
 
 ## Local Deployment
 
-### Non-Dockerized Spring Boot App, Dockerized MySQL
+### Containerized MySQL, non-containerized Spring Boot app, non-containerized React app
 
-#### Start MySQL (first run)
+#### MySQL
+
+##### Start MySQL (first run)
 
 ```zsh
-docker run --name mysql -td -p 3306:3306 -e MYSQL_ROOT_PASSWORD=password mysql:8.0
+docker run --name mysql -td \
+-p 3306:3306 \
+-e MYSQL_ROOT_PASSWORD=password \
+mysql:8.0
 ```
 
 MySQL needs to be initialized on the first run. Do this either via the CLI or
 via MySQL Workbench.
 
-#### Start MySQL (subsequent runs)
+##### Start MySQL - (subsequent runs)
 
 ```zsh
 docker start mysql
 ```
 
-#### Initialize MySQL - Option 1: CLI
+##### Initialize MySQL - Option 1: CLI
 
 1. Get a shell to the MySQL container
 
-```zsh
-docker exec -t mysql bash
-```
+   ```zsh
+   docker exec -t mysql bash
+   ```
 
 2. Connect to MySQL, password should be `password`
 
-```zsh
-root@b780cabe0641:/# mysql --password
-Enter password:
-```
+   ```zsh
+   root@b780cabe0641:/# mysql --password
+   Enter password:
+   ```
 
 3. Run the commands from `create-database-and-default-user.sql` manually
 
 4. Exit MySQL and the container shell
 
-```zsh
-mysql> exit
-Bye
-root@b780cabe0641:/# exit
-exit
-```
+   ```zsh
+   mysql> exit
+   Bye
+   root@b780cabe0641:/# exit
+   exit
+   ```
 
-#### Initialize MySQL - Option 2: MySQL Workbench
+##### Initialize MySQL - Option 2: MySQL Workbench
 
 1. Connect to local instance, password should be `password`
 
-![mysql workbench splash](./images/mysql-workbench-splash.png)
+   ![mysql workbench splash](./images/mysql-workbench-splash.png)
 
 2. Navigate to `Open SQL Script`
 
-![mysql workbench open sql script](./images/mysql-workbench-open-sql-script.png)
+   ![mysql workbench open sql script](./images/mysql-workbench-open-sql-script.png)
 
 3. Open `backend/create-database-and-default-user.sql`
 
 4. Execute the script
 
-#### Build, run the Spring Boot App
+#### Spring Boot app
+
+##### Build Spring Boot app
 
 ```zsh
 cd backend
-gradle build # build the app
-gradle bootRun # run the app
+gradle build
 ```
 
-Note: MySQL must be running in order to build the project, as :
-
-- tests will be run automatically,
-- `BackendApplicationTests` will start a Spring application context, and
-- an instance of MySQL is required at runtime
-
-Alternatively, build the app without testing as follows:
+Note: MySQL must be running in order to build the project, as tests require an
+instance of MySQL at runtime. Alternatively, build the app without testing as follows:
 
 ```zsh
-cd backend
 gradle build -x test
 ```
 
-#### Stop MySQL
+##### Run Spring Boot app
 
 ```zsh
-docker stop mysql
+gradle bootRun
 ```
 
-### Dockerized Spring Boot App, Dockerized MySQL (non-`docker-compose`)
+API is available at `http://localhost:8080/todos`.
 
-When running both the Spring Boot app and MySQL via Docker, a dedicated network
+#### React app
+
+##### Start React app
+
+```zsh
+cd frontend
+npm start
+```
+
+Your browser should automatically open, navigating to `http://localhost:3000`.
+
+### Containerize MySQL, Spring Boot app, React app (non-`docker-compose`)
+
+When running both MySQL, Spring Boot, and React all via Docker, a dedicated network
 is necessary:
 
 ```zsh
 docker network create --driver bridge scaleforce
 ```
 
-#### Start MySQL (isolated network)
+#### MySQL
+
+##### Start MySQL (dedicated network)
 
 ```zsh
-docker run --name mysql --network scaleforce -td -p 3306:3306 -e MYSQL_ROOT_PASSWORD=password mysql:8.0
+docker run --name mysql -td \
+--network scaleforce \
+-p 3306:3306 \
+-e MYSQL_ROOT_PASSWORD=password \
+mysql:8.0
 ```
 
 Don't forget to initialize MySQL.
 
-#### Create, run image of the Spring Boot app
+#### Spring Boot app
 
-To create a fresh image of the app:
+##### Build Spring Boot app image
+
+Note: Make sure you've successfully built the Spring Boot app via `gradle build`.
 
 ```zsh
 cd backend
 docker build -t sp21-172-scaleforce/backend .
 ```
 
-To run it:
+##### Run Spring Boot app from image
 
 ```zsh
-docker run --name backend --network scaleforce -td -p 8080:8080 -e "MYSQL_HOST=mysql" sp21-172-scaleforce/backend
+docker run --name backend -td \
+--network scaleforce \
+-p 8080:8080 \
+-e "MYSQL_HOST=mysql" \
+sp21-172-scaleforce/backend
 ```
 
-### Dockerized Spring Boot App, Dockerized MySQL (`docker-compose`)
+#### React app
+
+##### Build React app image
+
+```zsh
+cd frontend
+docker build -t sp21-172-scaleforce/frontend .
+```
+
+##### Run React app from image - Option 1: `--network="host"`
+
+```zsh
+docker run --name frontend -itd \
+--network="host" \
+-v ${PWD}:/app \
+-v /app/node_modules \
+sp21-172-scaleforce/frontend
+```
+
+App should be available at `http://localhost:8080`. I need to do more research
+as to whether `--network="host"` will work for GKE.
+
+##### Run React app from image - Option 2: `--network scaleforce`
+
+This method seems a little more kosher, but involves more work. First off, the
+original proxy defined in `package.json` means that the React app expects to be
+able to access the API at `http://localhost:8080`. This doesn't work in the
+dedicated Docker network. This means that we have to change the value for proxy
+from `http://localhost:8080` to `http://backend:8080`, **which also means a
+rebuild of the app image is required**. The rebuild should be relatively fast,
+since the difference is small.
+
+Then, run the app (note the difference in network and port options):
+
+```zsh
+docker run --name frontend -itd \
+--network scaleforce \
+-p 3000:3000
+-v ${PWD}:/app \
+-v /app/node_modules \
+sp21-172-scaleforce/frontend
+```
+
+### Containerized MySQL, containerized Spring Boot app, containerized React app - `docker-compose`
 
 Wasn't able to get this working. `docker-compose` successfully starts a
 container for `mysql` and initializes it using
