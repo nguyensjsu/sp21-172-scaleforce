@@ -1,0 +1,52 @@
+version: "3"
+
+services:
+  mysql:
+    image: mysql:8.0
+    volumes:
+      - /tmp:/tmp
+      - ./backend/create-database-and-default-user.sql:/docker-entrypoint-initdb.d/1.sql
+    networks:
+      - network
+    ports:
+      - 3306
+    environment:
+      MYSQL_ROOT_PASSWORD: "password"
+    restart: always
+  api:
+    image: sp21-172-scaleforce/backend
+    depends_on:
+      - mysql
+    volumes:
+      - /tmp:/tmp
+    networks:
+      - network
+    ports:
+      - 8080
+      # - 8080:8080
+    environment:
+      MYSQL_HOST: "mysql"
+    restart: on-failure
+  load-balancer:
+    image: eeacms/haproxy
+    depends_on:
+      - api
+    ports:
+      - "80:5000"
+      - "1936:1936"
+    environment:
+      BACKENDS: "api"
+      BACKENDS_PORT: "8080"
+      DNS_ENABLED: "true"
+      COOKIES_ENABLED: "false"
+      LOG_LEVEL: "info"
+    networks:
+      - network
+
+volumes:
+  schemas:
+    external: false
+
+networks:
+  network:
+    driver: bridge
