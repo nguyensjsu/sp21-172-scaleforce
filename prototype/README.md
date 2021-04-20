@@ -18,7 +18,7 @@ mysql:8.0
 MySQL needs to be initialized on the first run. Do this either via the CLI or
 via MySQL Workbench.
 
-##### Start MySQL - (subsequent runs)
+##### Start MySQL (subsequent runs)
 
 ```zsh
 docker start mysql
@@ -99,7 +99,7 @@ npm start
 
 Your browser should automatically open, navigating to `http://localhost:3000`.
 
-### Containerize MySQL, Spring Boot app, React app (non-`docker-compose`)
+### Containerized MySQL, Spring Boot app, React app (non-`docker-compose`)
 
 When running both MySQL, Spring Boot, and React all via Docker, a dedicated network
 is necessary:
@@ -180,7 +180,7 @@ Then, run the app (note the difference in network and port options):
 ```zsh
 docker run --name frontend -itd \
 --network scaleforce \
--p 3000:3000
+-p 3000:3000 \
 -v ${PWD}:/app \
 -v /app/node_modules \
 sp21-172-scaleforce/frontend
@@ -236,4 +236,4 @@ failing health check.
 I believe this is related to haproxy making a certain HTTP request against the
 backend and expecting a certain status code, so I think a combination of
 updating the backend app and using a `haproxy.cfg` might work, but I'm honestly
-out of my depth here.
+out of my depth here. Have yet to test with React app.
