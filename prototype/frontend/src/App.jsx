@@ -2,17 +2,35 @@ import './App.css';
 
 import axios from 'axios';
 import React from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 import TodoTable from './components/TodoTable';
 
 const TodoForm = () => {
-  const mutation = useMutation((todo) => axios.post('/todos', todo));
+  const queryClient = useQueryClient();
+
+  const addTodo = (todo) => axios.post('/todos', todo);
+
+  const mutation = useMutation(addTodo, {
+    onMutate: async (newTodo) => {
+      await queryClient.cancelQueries('todos');
+      const previousTodos = queryClient.getQueryData('todos');
+      queryClient.setQueryData('todos', (old) => [...old, newTodo]);
+      return { previousTodos };
+    },
+    onError: (err, newTodo, context) => {
+      queryClient.setQueryData('todos', context.previousTodos);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries('todos');
+    },
+  });
 
   const onSubmit = (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
     const newTodo = {
+      id: -1,
       title: formData.get('title'),
       description: formData.get('description'),
     };
