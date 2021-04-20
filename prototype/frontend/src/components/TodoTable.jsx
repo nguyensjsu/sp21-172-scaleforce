@@ -11,25 +11,7 @@ const TodoRow = ({ todo }) => (
   </tr>
 );
 
-function TodoTable({ initialTodos }) {
-  const [todos, setTodos] = useState(initialTodos);
-  const [todoRows, setTodoRows] = useState([]);
-
-  const initializeTodoRows = async () => {
-    setTodoRows(
-      todos.map((todo) => (
-        <TodoRow
-          key={todo.id}
-          todo={todo}
-        />
-      )),
-    );
-  };
-
-  useEffect(() => {
-    initializeTodoRows();
-  }, [todos]);
-
+function TodoTable({ todos }) {
   return (
     <table>
       <thead>
@@ -40,7 +22,12 @@ function TodoTable({ initialTodos }) {
         </tr>
       </thead>
       <tbody>
-        {todoRows}
+        {todos.map((todo) => (
+          <TodoRow
+            key={todo.id}
+            todo={todo}
+          />
+        ))}
       </tbody>
     </table>
   );

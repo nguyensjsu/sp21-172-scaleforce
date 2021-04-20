@@ -31,7 +31,7 @@ function App() {
   return (
     <>
       <TodoTable
-        initialTodos={todos.data}
+        todos={todos.data}
       />
     </>
   );
