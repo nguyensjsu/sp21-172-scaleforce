@@ -130,7 +130,7 @@ Note: Make sure you've successfully built the Spring Boot app via `gradle build`
 
 ```zsh
 cd backend
-docker build -t sp21-172-scaleforce/backend .
+docker build -t scaleforce172/backend .
 ```
 
 ##### Run Spring Boot app from image
@@ -140,7 +140,7 @@ docker run --name backend -td \
 --network scaleforce \
 -p 8080:8080 \
 -e "MYSQL_HOST=mysql" \
-sp21-172-scaleforce/backend
+scaleforce172/backend
 ```
 
 #### React app
@@ -149,7 +149,7 @@ sp21-172-scaleforce/backend
 
 ```zsh
 cd frontend
-docker build -t sp21-172-scaleforce/frontend .
+docker build -t scaleforce172/frontend .
 ```
 
 ##### Run React app from image - Option 1: `--network="host"`
@@ -159,7 +159,7 @@ docker run --name frontend -itd \
 --network="host" \
 -v ${PWD}:/app \
 -v /app/node_modules \
-sp21-172-scaleforce/frontend
+scaleforce172/frontend
 ```
 
 App should be available at `http://localhost:8080`. I need to do more research
@@ -183,7 +183,7 @@ docker run --name frontend -itd \
 -p 3000:3000 \
 -v ${PWD}:/app \
 -v /app/node_modules \
-sp21-172-scaleforce/frontend
+scaleforce172/frontend
 ```
 
 ### Containerized MySQL, containerized Spring Boot app, containerized React app - `docker-compose`
@@ -237,3 +237,90 @@ I believe this is related to haproxy making a certain HTTP request against the
 backend and expecting a certain status code, so I think a combination of
 updating the backend app and using a `haproxy.cfg` might work, but I'm honestly
 out of my depth here. Have yet to test with React app.
+
+## Cloud Deployment
+
+### Docker Hub
+
+Before we deploy our app on Google Kubernetes Engine (GKE), all custom images
+must be available in some public-facing library. We use Docker hub.
+
+#### Login
+
+```zsh
+docker login
+```
+
+#### Upload images
+
+```zsh
+docker push <image-name>
+```
+
+### Google Kubernetes Engine (GKE)
+
+The prototype app consists of the following:
+
+- a Cloud SQL instance,
+- a Deployment for the backend,
+- a NodePort Service to expose the backend service,
+- a Deployment for the frontend,
+- a NodePort Service to expose the frontend service, and
+- a LoadBalancer service to serve the frontend service publicly.
+
+#### Cloud SQL Setup
+
+We create an instance using this tutorial: [Quickstart for Cloud SQL for
+MySQL](https://cloud.google.com/sql/docs/mysql/quickstart). Notes:
+
+- We enable a private IP
+
+Once our instance is provisioned, we initialize it based on
+`create-database-and-default-user.sql`.
+
+#### Cluster, Cloud SQL Setup
+
+First, we spin up a GKE cluster. Then, we connect to our Cloud SQL instance
+based on this tutorial: [Connecting from Google Kubernetes
+Engine](https://cloud.google.com/sql/docs/mysql/connect-kubernetes-engine#private-ip).
+For simplicity, we choose to connect without the Cloud SQL Auth proxy.
+
+#### Jumpbox
+
+To hit endpoints within the cluster network, we use a jumpbox. The service is
+defined in `jumpbox.yml` and we run it as follows:
+
+```bash
+kubectl create -f jumpbox.yml
+```
+
+To get a shell, we run the following:
+
+```bash
+kubectl exec -it jumpbox -- /bin/bash
+```
+
+Finally, we install our favorite utilities:
+
+```bash
+apt update && apt install -y dnsutils vim tmux wget curl gnupg watch jq
+```
+
+#### Backend Deployment
+
+We create a `deployment-backend.yml` to
+describe our backend Deployment and a `nodeport-backend.yml` to describe our
+NodePort Service for the backend and run them using `kubectl`:
+
+```bash
+kubectl create -f deployment-backend.yml --save-config
+kubectl create -f nodeport-backend.yml
+```
+
+To test, we hit `/todos` on the endpoint provisioned for `nodeport-backend`:
+
+![backend jumpbox test](./images/backend-jumpbox-test.png)
+
+#### Frontend Deployment
+
+TODO
