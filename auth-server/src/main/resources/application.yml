@@ -1,3 +1,11 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/auth
+    username: root
+    password: cmpe172
 jwt:
   window: 120
-  key: "Zokj32nspovi8dw3ekfi8no3CV0Sfpoi"
+  key: Zokj32nspovi8dw3ekfi8no3CV0Sfpoi
