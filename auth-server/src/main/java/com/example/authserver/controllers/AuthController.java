@@ -3,10 +3,14 @@ package com.example.authserver.controllers;
 import com.example.authserver.AuthProperties;
 import com.example.authserver.entities.User;
 import com.example.authserver.repositories.UserRepository;
+import com.example.authserver.requests.AuthRequest;
 import com.example.authserver.util.JwtWrapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Collections;
+import java.util.Map;
 
 @RestController
 class AuthController {
@@ -19,10 +23,15 @@ class AuthController {
         this.authProperties = authProperties;
     }
 
-    @GetMapping("/test")
-    String getMeAFuckinJwt()
+    @PostMapping("/auth")
+    Map<String, String> getJWT(@RequestBody AuthRequest authRequest)
     {
-        return new JwtWrapper(authProperties).buildJws("Nick", "admin");
+        User user = repository.findByUsername(authRequest.getUsername());
+        if (user == null || !authRequest.getPassword().equals(user.getPassword()))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
+
+
+        return Collections.singletonMap("jwt", new JwtWrapper(authProperties).buildJws(user.getUsername(), user.getPermissions()));
     }
 
     @PostMapping("/users")

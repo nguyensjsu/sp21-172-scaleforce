@@ -5,13 +5,13 @@ import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.KeyGenerator;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
-import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 @Component
 public class JwtWrapper
@@ -24,29 +24,19 @@ public class JwtWrapper
         this.authProperties = properties;
     }
 
-    public String buildJws(String username, String privilege)
+    public String buildJws(String username, List<String> privilege)
     {
         byte[] decodedKey = Base64.getDecoder().decode(authProperties.getKey());
         Key key = new SecretKeySpec(decodedKey, "HmacSHA256");
 
         return Jwts.builder()
-//                .setId(UUID.randomUUID().toString())
+                .setId(UUID.randomUUID().toString())
                 .setIssuer("HaircutAuthServer")
                 .setSubject(username)
-                .claim("type", privilege)
+                .claim("type", privilege.toString())
                 .setIssuedAt(Date.from(Instant.now()))
                 .setExpiration(Date.from(Instant.now().plusSeconds(authProperties.getWindow())))
                 .signWith(key)
                 .compact();
-    }
-
-    public static void main(String[] args) throws NoSuchAlgorithmException
-    {
-        Key secretKey = KeyGenerator.getInstance("HmacSHA256").generateKey();
-        String encodedKey = Base64.getEncoder().encodeToString(secretKey.getEncoded());
-
-        System.out.println(encodedKey);
-
-
     }
 }

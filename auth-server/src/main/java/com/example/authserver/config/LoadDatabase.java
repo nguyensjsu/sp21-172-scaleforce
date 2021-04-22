@@ -20,8 +20,7 @@ class LoadDatabase {
         ArrayList<String> permissions = new ArrayList<>();
         ArrayList<String> noPermissions = new ArrayList<>();
 
-        permissions.add("haircut");
-
+        permissions.add("admin");
 
         return args -> {
             log.info("Preloading " + repository.save(new User("Nick", "N", permissions)));
