@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      name: frontend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: scaleforce172/frontend:latest
+        ports:
+        - containerPort: 3000

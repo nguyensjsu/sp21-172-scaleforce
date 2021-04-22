@@ -152,6 +152,9 @@ cd frontend
 docker build -t scaleforce172/frontend .
 ```
 
+Note: this build method (based on the Dockerfile) is not "production-ready"
+(e.g. minified, etc).
+
 ##### Run React app from image - Option 1: `--network="host"`
 
 ```zsh
@@ -264,8 +267,7 @@ The prototype app consists of the following:
 - a Cloud SQL instance,
 - a Deployment for the backend,
 - a NodePort Service to expose the backend service,
-- a Deployment for the frontend,
-- a NodePort Service to expose the frontend service, and
+- a Deployment for the frontend, and
 - a LoadBalancer service to serve the frontend service publicly.
 
 #### Cloud SQL Setup
@@ -308,9 +310,9 @@ apt update && apt install -y dnsutils vim tmux wget curl gnupg watch jq
 
 #### Backend Deployment
 
-We create a `deployment-backend.yml` to
-describe our backend Deployment and a `nodeport-backend.yml` to describe our
-NodePort Service for the backend and run them using `kubectl`:
+We create a `deployment-backend.yml` to describe our backend Deployment and a
+`nodeport-backend.yml` to describe our NodePort Service for the backend and run
+them using `kubectl`:
 
 ```bash
 kubectl create -f deployment-backend.yml --save-config
@@ -323,4 +325,17 @@ To test, we hit `/todos` on the endpoint provisioned for `nodeport-backend`:
 
 #### Frontend Deployment
 
-TODO
+We create a `deployment-frontend.yml` to describe our frontend Deployment and a
+`loadbalancer-frontend.yml` to describe our LoadBalancer service for the
+frontend and run them using `kubectl`:
+
+```bash
+kubectl create -f deployment-frontend.yml --save-config
+kubectl create -f loadbalancer-frontend.yml
+```
+
+Proxying API request in development is relatively simple (requires a value for
+the key `proxy` in `package.json`), but I wasn't able to figure out how to make
+this work in production.
+
+![api proxy failed](./images/api-proxy-failed.png)
