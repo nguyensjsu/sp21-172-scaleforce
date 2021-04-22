@@ -2,19 +2,21 @@ package com.example.authserver.util;
 
 import com.example.authserver.AuthProperties;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.KeyGenerator;
+import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
+import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
+import java.util.Base64;
 import java.util.Date;
 
 @Component
 public class JwtWrapper
 {
-    private AuthProperties authProperties;
+    private final AuthProperties authProperties;
 
     @Autowired
     public JwtWrapper(AuthProperties properties)
@@ -22,24 +24,29 @@ public class JwtWrapper
         this.authProperties = properties;
     }
 
-    public String buildJws()
+    public String buildJws(String username, String privilege)
     {
-
-        System.out.println(authProperties.getKey());
-        System.out.println(authProperties.getWindow());
-
-        Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+        byte[] decodedKey = Base64.getDecoder().decode(authProperties.getKey());
+        Key key = new SecretKeySpec(decodedKey, "HmacSHA256");
 
         return Jwts.builder()
-                .setIssuer("ME")
-                .setSubject("For testing")
-                .claim("name", "Username")
-                .claim("Haircut", "User")
+//                .setId(UUID.randomUUID().toString())
+                .setIssuer("HaircutAuthServer")
+                .setSubject(username)
+                .claim("type", privilege)
                 .setIssuedAt(Date.from(Instant.now()))
                 .setExpiration(Date.from(Instant.now().plusSeconds(authProperties.getWindow())))
                 .signWith(key)
                 .compact();
     }
 
-//    Byte[] stuff = {-50, -98, 27, -44, -52, 124, 120, -79, 94, -72, 14, 8, 53, 66, 76, -70, 114, 100, 90, 123, -78, -119, -76, 36, 88, -123, -26, -30, -112, 76, -107, -53};
+    public static void main(String[] args) throws NoSuchAlgorithmException
+    {
+        Key secretKey = KeyGenerator.getInstance("HmacSHA256").generateKey();
+        String encodedKey = Base64.getEncoder().encodeToString(secretKey.getEncoded());
+
+        System.out.println(encodedKey);
+
+
+    }
 }

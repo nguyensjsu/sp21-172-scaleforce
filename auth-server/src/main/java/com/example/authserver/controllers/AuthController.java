@@ -1,39 +1,37 @@
 package com.example.authserver.controllers;
 
+import com.example.authserver.AuthProperties;
 import com.example.authserver.entities.User;
 import com.example.authserver.repositories.UserRepository;
+import com.example.authserver.util.JwtWrapper;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 class AuthController {
 
     private final UserRepository repository;
+    private final AuthProperties authProperties;
 
-    AuthController(UserRepository repository) {
+    AuthController(UserRepository repository, AuthProperties authProperties) {
         this.repository = repository;
+        this.authProperties = authProperties;
     }
 
+    @GetMapping("/test")
+    String getMeAFuckinJwt()
+    {
+        return new JwtWrapper(authProperties).buildJws("Nick", "admin");
+    }
 
-//    // Aggregate root
-//    // tag::get-aggregate-root[]
-//    @GetMapping("/Users")
-//    List<User> all() {
-//        return repository.findAll();
-//    }
-//    // end::get-aggregate-root[]
-
-//    @PostMapping("/employees")
-//    Employee newEmployee(@RequestBody Employee newEmployee) {
-//        return repository.save(newEmployee);
-//    }
+    @PostMapping("/users")
+    User newUser(@RequestBody User newUser) {
+        return repository.save(newUser);
+    }
 
     // Single item
-
-    @GetMapping("/users/{id}")
+    @GetMapping("/user/{id}")
     User one(@PathVariable Long id) {
 
         return repository.findById(id)

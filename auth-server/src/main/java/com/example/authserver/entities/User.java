@@ -4,22 +4,20 @@ import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Data
 @RequiredArgsConstructor
+@Table(name = "HAIRCUT_USERS")
 public class User
 {
     @Id @GeneratedValue
     private Long id;
 
-    @NonNull
+    @NonNull @Column(unique=true)
     private String username;
 
     @NonNull

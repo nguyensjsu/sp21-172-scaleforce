@@ -1,11 +1,11 @@
 spring:
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
   datasource:
     url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/auth
     username: root
     password: cmpe172
 jwt:
   window: 120
-  key: Zokj32nspovi8dw3ekfi8no3CV0Sfpoi
+  key: dI77U8bhgMefJrG6qQpugl95n8bADM3shHbVO43vX+g=
