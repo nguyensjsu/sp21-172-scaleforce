@@ -1,5 +1,6 @@
 package com.example.authserver.config;
 
+import com.example.authserver.entities.Permission;
 import com.example.authserver.entities.User;
 import com.example.authserver.repositories.UserRepository;
 import org.slf4j.Logger;
@@ -8,8 +9,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.ArrayList;
-
 @Configuration
 class LoadDatabase {
 
@@ -17,14 +16,11 @@ class LoadDatabase {
 
     @Bean
     CommandLineRunner initDatabase(UserRepository repository) {
-        ArrayList<String> permissions = new ArrayList<>();
-        ArrayList<String> noPermissions = new ArrayList<>();
-
-        permissions.add("admin");
 
         return args -> {
-            log.info("Preloading " + repository.save(new User("Nick", "N", permissions)));
-            log.info("Preloading " + repository.save(new User("G", "G", noPermissions)));
+            log.info("Preloading " + repository.save(new User("Nick", "N", Permission.ADMIN)));
+            log.info("Preloading " + repository.save(new User("G", "G", Permission.OFFICE)));
+            log.info("Preloading " + repository.save(new User("Jake", "J", Permission.USER)));
         };
     }
 }

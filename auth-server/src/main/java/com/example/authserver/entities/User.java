@@ -1,16 +1,16 @@
 package com.example.authserver.entities;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Data
 @RequiredArgsConstructor
+@NoArgsConstructor
 @Table(name = "HAIRCUT_USERS")
 public class User
 {
@@ -23,16 +23,8 @@ public class User
     @NonNull
     private String password;
 
-    @NonNull @ElementCollection
-    private List<String> permissions;
-
-    public User()
-    {
-        permissions = new ArrayList<>();
-    }
-
-    public void addPermission(String permission)
-    {
-        permissions.add(permission);
-    }
+    @NonNull
+    private Permission permission;
 }
+
+
