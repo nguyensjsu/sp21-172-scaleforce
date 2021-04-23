@@ -39,7 +39,7 @@ public class JwtUtil
         return true;
         }
         catch (Exception e) {
-            // any problem should just return false
+//            any exception means invalid, so return false
             return false;
         }
     }

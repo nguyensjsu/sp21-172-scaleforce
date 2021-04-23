@@ -8,16 +8,9 @@ import javax.servlet.http.HttpServletResponse;
 public class JwtInterceptor implements HandlerInterceptor
 {
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
     {
+        //TODO: Unstub this for allowing the use of the user endpoints
         return true;
-//        try {
-//            String jwt = request.getHeader("Authorization");
-//            jwt = jwt.split("Bearer ")[0];
-//            return JwtUtil.validateJwt(jwt);
-//        } catch (Exception e)
-//        {
-//            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
-//        }
     }
 }
