@@ -14,11 +14,15 @@ I also added some comments to John's google doc on the data structures and table
 Currently the auth server has all the main functionality needed. It needs another PR to open up admin access via the stubbede interceptor pattern to allow CRUD operations
 
 Commits: 
+
 https://github.com/nguyensjsu/sp21-172-scaleforce/pull/2/commits
+
 https://github.com/nguyensjsu/sp21-172-scaleforce/pull/9/commits
 
 PRs:
+
 https://github.com/nguyensjsu/sp21-172-scaleforce/pull/2
+
 https://github.com/nguyensjsu/sp21-172-scaleforce/pull/9
 
 ### Challenges
