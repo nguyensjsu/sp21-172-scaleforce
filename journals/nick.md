@@ -5,6 +5,7 @@
 ### Tasks
 
 For this sprint I worked on this issue: [Creating Auth Server](https://github.com/nguyensjsu/sp21-172-scaleforce/issues/5)
+
 I also created a base project but that was mainly to test the github workflow: [create base folders](https://github.com/nguyensjsu/sp21-172-scaleforce/issues/1)
 
 I also added some comments to John's google doc on the data structures and tables for the application
