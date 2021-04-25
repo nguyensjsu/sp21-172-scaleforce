@@ -1,0 +1,15 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/auth
+    username: root
+    password: cmpe172
+jwt:
+  issuer: HaircutAuthServer
+  window: 120
+  key: dI77U8bhgMefJrG6qQpugl95n8bADM3shHbVO43vX+g=
+#server:
+#  error:
+#  include-message: always
