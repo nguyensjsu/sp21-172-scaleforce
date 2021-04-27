@@ -1,0 +1,199 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > AuthController</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+    @import "../../.css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../.js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.authserver.controllers</a>
+</div>
+
+<h1>Coverage Summary for Class: AuthController (com.example.authserver.controllers)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AuthController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (3/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    62.1%
+  </span>
+  <span class="absValue">
+    (18/29)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package com.example.authserver.controllers;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import com.example.authserver.AuthProperties;
+<i class="no-highlight">4</i>&nbsp;import com.example.authserver.entities.Permission;
+<i class="no-highlight">5</i>&nbsp;import com.example.authserver.entities.User;
+<i class="no-highlight">6</i>&nbsp;import com.example.authserver.repositories.UserRepository;
+<i class="no-highlight">7</i>&nbsp;import com.example.authserver.requests.AuthRequest;
+<i class="no-highlight">8</i>&nbsp;import com.example.authserver.util.JwtUtil;
+<i class="no-highlight">9</i>&nbsp;import io.jsonwebtoken.Claims;
+<i class="no-highlight">10</i>&nbsp;import io.jsonwebtoken.Jws;
+<i class="no-highlight">11</i>&nbsp;import org.springframework.http.HttpHeaders;
+<i class="no-highlight">12</i>&nbsp;import org.springframework.http.HttpStatus;
+<i class="no-highlight">13</i>&nbsp;import org.springframework.web.bind.annotation.*;
+<i class="no-highlight">14</i>&nbsp;import org.springframework.web.server.ResponseStatusException;
+<i class="no-highlight">15</i>&nbsp;
+<i class="no-highlight">16</i>&nbsp;import java.util.Collections;
+<i class="no-highlight">17</i>&nbsp;import java.util.Map;
+<i class="no-highlight">18</i>&nbsp;
+<i class="no-highlight">19</i>&nbsp;@RestController
+<i class="no-highlight">20</i>&nbsp;class AuthController {
+<i class="no-highlight">21</i>&nbsp;
+<i class="no-highlight">22</i>&nbsp;    private final UserRepository repository;
+<i class="no-highlight">23</i>&nbsp;    private final AuthProperties authProperties;
+<i class="no-highlight">24</i>&nbsp;
+<b class="fc"><i class="no-highlight">25</i>&nbsp;    AuthController(UserRepository repository, AuthProperties authProperties) {</b>
+<b class="fc"><i class="no-highlight">26</i>&nbsp;        this.repository = repository;</b>
+<b class="fc"><i class="no-highlight">27</i>&nbsp;        this.authProperties = authProperties;</b>
+<b class="fc"><i class="no-highlight">28</i>&nbsp;    }</b>
+<i class="no-highlight">29</i>&nbsp;
+<i class="no-highlight">30</i>&nbsp;    @PostMapping(&quot;/auth&quot;)
+<i class="no-highlight">31</i>&nbsp;    Map&lt;String, String&gt; getJWT(@RequestBody AuthRequest authRequest)
+<i class="no-highlight">32</i>&nbsp;    {
+<b class="fc"><i class="no-highlight">33</i>&nbsp;        User user = repository.findByUsername(authRequest.getUsername());</b>
+<b class="fc"><i class="no-highlight">34</i>&nbsp;        if (user == null || !authRequest.getPassword().equals(user.getPassword()))</b>
+<b class="fc"><i class="no-highlight">35</i>&nbsp;            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, &quot;Invalid credentials&quot;);</b>
+<i class="no-highlight">36</i>&nbsp;
+<b class="fc"><i class="no-highlight">37</i>&nbsp;        return Collections.singletonMap(&quot;jwt&quot;, new JwtUtil(authProperties).buildJws(user.getUsername(), user.getPermission()));</b>
+<i class="no-highlight">38</i>&nbsp;    }
+<i class="no-highlight">39</i>&nbsp;
+<i class="no-highlight">40</i>&nbsp;    @PostMapping(&quot;/validate&quot;)
+<i class="no-highlight">41</i>&nbsp;    Map&lt;String, String&gt; validateJWT(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth)
+<i class="no-highlight">42</i>&nbsp;    {
+<b class="fc"><i class="no-highlight">43</i>&nbsp;        String jwt = auth.substring(7);</b>
+<b class="fc"><i class="no-highlight">44</i>&nbsp;        JwtUtil jwtUtil = new JwtUtil(authProperties);</b>
+<i class="no-highlight">45</i>&nbsp;
+<i class="no-highlight">46</i>&nbsp;        // validates the jwt
+<b class="fc"><i class="no-highlight">47</i>&nbsp;        if (!jwtUtil.validateJwt(jwt))</b>
+<b class="fc"><i class="no-highlight">48</i>&nbsp;            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, &quot;Invalid credentials&quot;);</b>
+<i class="no-highlight">49</i>&nbsp;
+<b class="fc"><i class="no-highlight">50</i>&nbsp;        Jws&lt;Claims&gt; claims = jwtUtil.getClaims(jwt);</b>
+<i class="no-highlight">51</i>&nbsp;        // issuer matches
+<b class="fc"><i class="no-highlight">52</i>&nbsp;        if (claims == null || !claims.getBody().getIssuer().equals(authProperties.getIssuer()))</b>
+<b class="fc"><i class="no-highlight">53</i>&nbsp;            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, &quot;Invalid credentials&quot;);</b>
+<i class="no-highlight">54</i>&nbsp;
+<i class="no-highlight">55</i>&nbsp;        // subject of token exists in db
+<b class="fc"><i class="no-highlight">56</i>&nbsp;        if (repository.findByUsername(claims.getBody().getSubject()) == null)</b>
+<b class="fc"><i class="no-highlight">57</i>&nbsp;            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, &quot;Invalid credentials&quot;);</b>
+<i class="no-highlight">58</i>&nbsp;
+<i class="no-highlight">59</i>&nbsp;
+<b class="fc"><i class="no-highlight">60</i>&nbsp;        return Collections.singletonMap(&quot;jwt&quot;, &quot;valid&quot;);</b>
+<i class="no-highlight">61</i>&nbsp;    }
+<i class="no-highlight">62</i>&nbsp;
+<i class="no-highlight">63</i>&nbsp;    @PostMapping(&quot;/users&quot;)
+<i class="no-highlight">64</i>&nbsp;    User newUser(@RequestBody AuthRequest newUser) {
+<b class="nc"><i class="no-highlight">65</i>&nbsp;        return repository.save(new User(newUser.getUsername(), newUser.getPassword(), Permission.USER));</b>
+<i class="no-highlight">66</i>&nbsp;    }
+<i class="no-highlight">67</i>&nbsp;
+<i class="no-highlight">68</i>&nbsp;    // Single item
+<i class="no-highlight">69</i>&nbsp;    @GetMapping(&quot;/user/{id}&quot;)
+<i class="no-highlight">70</i>&nbsp;    User getUser(@PathVariable Long id) {
+<i class="no-highlight">71</i>&nbsp;
+<b class="nc"><i class="no-highlight">72</i>&nbsp;        return repository.findById(id)</b>
+<b class="nc"><i class="no-highlight">73</i>&nbsp;                .orElseThrow(() -&gt; new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(&quot;User with id \&quot;%s\&quot; not found&quot;, id)));</b>
+<i class="no-highlight">74</i>&nbsp;    }
+<i class="no-highlight">75</i>&nbsp;
+<i class="no-highlight">76</i>&nbsp;    @PutMapping(&quot;/user/{id}&quot;)
+<i class="no-highlight">77</i>&nbsp;    User replaceUser(@PathVariable Long id, @RequestBody AuthRequest authRequest)
+<i class="no-highlight">78</i>&nbsp;    {
+<b class="nc"><i class="no-highlight">79</i>&nbsp;        return repository.findById(id).map(</b>
+<i class="no-highlight">80</i>&nbsp;                user -&gt; {
+<b class="nc"><i class="no-highlight">81</i>&nbsp;                    user.setUsername(authRequest.getUsername());</b>
+<b class="nc"><i class="no-highlight">82</i>&nbsp;                    user.setPassword(authRequest.getPassword());</b>
+<b class="nc"><i class="no-highlight">83</i>&nbsp;                    return repository.save(user);</b>
+<i class="no-highlight">84</i>&nbsp;                })
+<b class="nc"><i class="no-highlight">85</i>&nbsp;                .orElseThrow(() -&gt;</b>
+<b class="nc"><i class="no-highlight">86</i>&nbsp;                        new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(&quot;User with id \&quot;%s\&quot; not found&quot;, id)));</b>
+<i class="no-highlight">87</i>&nbsp;    }
+<i class="no-highlight">88</i>&nbsp;
+<i class="no-highlight">89</i>&nbsp;    @DeleteMapping(&quot;/user/{id}&quot;)
+<i class="no-highlight">90</i>&nbsp;    void deleteUser(@PathVariable Long id)
+<i class="no-highlight">91</i>&nbsp;    {
+<b class="nc"><i class="no-highlight">92</i>&nbsp;        repository.deleteById(id);</b>
+<b class="nc"><i class="no-highlight">93</i>&nbsp;    }</b>
+<i class="no-highlight">94</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2021-04-27 05:31</div>
+</div>
+</body>
+</html>
