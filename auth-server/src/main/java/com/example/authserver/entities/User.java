@@ -18,7 +18,7 @@ public class User
     private Long id;
 
     @NonNull @Column(unique=true)
-    private String username;
+    private String email;
 
     @NonNull
     private String password;

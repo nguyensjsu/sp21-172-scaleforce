@@ -30,12 +30,12 @@ public class JwtUtil
                 .build();
     }
 
-    public boolean validateJwt(String jwt)
+    public boolean validateJwt(String jws)
     {
         try {
 //        throws these exceptions on failure:
 //        ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException, IllegalArgumentException
-        Jws<Claims> claims = jwtParser.parseClaimsJws(jwt);
+        Jws<Claims> claims = jwtParser.parseClaimsJws(jws);
         return true;
         }
         catch (Exception e) {
@@ -44,10 +44,11 @@ public class JwtUtil
         }
     }
 
-    public Jws<Claims> getClaims(String jwt)
+    public Jws<Claims> getClaims(String jws)
     {
+        // Also validates the jws
         try {
-            return jwtParser.parseClaimsJws(jwt);
+            return jwtParser.parseClaimsJws(jws);
         } catch (JwtException e) { return null; }
     }
 
