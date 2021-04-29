@@ -1,5 +1,9 @@
 # {project name}
 
+## How to Deploy
+
+See DEPLOYMENT.
+
 ## Cashier App
 
 TODO features implemented
