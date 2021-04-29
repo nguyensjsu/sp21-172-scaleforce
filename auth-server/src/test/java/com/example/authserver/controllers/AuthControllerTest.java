@@ -129,22 +129,50 @@ public class AuthControllerTest {
         .andExpect(status().isUnauthorized());
   }
 
-  @Disabled
   @Test
   void validateJWT_unsupportedJwtException() throws Exception {
-    // TODO
+    // token represents an unsigned claims JWT
+    String token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIzNzY1OWMwMi05NTI2LTQ5OTEtYjUyNS05OTM4NTdkNTM0NT"
+        + "IiLCJpc3MiOiJIYWlyY3V0QXV0aFNlcnZlciIsInN1YiI6Ik5pY2siLCJ0eXBlIjoiQURNSU4iLCJpYXQiOjE2MT"
+        + "k2NTUxNDYsImV4cCI6OTk5OTk5OTk5OX0.";
+
+    mockMvc
+        .perform(
+            post("/validate")
+                .header("Authorization", "Bearer: " + token))
+        .andExpect(status().isUnauthorized());
   }
 
-  @Disabled
   @Test
   void validateJWT_malformedJwtException() throws Exception {
-    // TODO
+    /*
+    Payload:
+    "I�J�\u0004IHǊ(]�O���ǉ~�:N�%_�u\u000b,×"
+     */
+    String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5"
+        + "c";
+
+    mockMvc
+        .perform(
+            post("/validate")
+                .header("Authorization", "Bearer: " + token))
+        .andExpect(status().isUnauthorized());
   }
 
-  @Disabled
   @Test
   void validateJWT_signatureException() throws Exception {
-    // TODO
+    /*
+    Payload:
+    "{\"sub\":\"1234567890\",\"name\":\"Joho��\u0011�������Ј�������������"
+     */
+    String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG"
+        + "4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfaQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+
+    mockMvc
+        .perform(
+            post("/validate")
+                .header("Authorization", "Bearer: " + token))
+        .andExpect(status().isUnauthorized());
   }
 
   @Test
@@ -161,7 +189,17 @@ public class AuthControllerTest {
   @Disabled
   @Test
   void validateJWT_nullClaims() throws Exception {
-    // TODO
+    /*
+    may not actually be able to create a test s.t. validateJWT passes an invalid JWT to
+    jwtUtil.getClaims():
+    - validateJWT first passes the JWT to jwtUtil.validateJwt
+    - jwtUtil.validateJwt passes the JWT to jwtParser.parseClaimsJws, which raises an exception
+      upon an invalid JWT
+    - validateJWT then passes the valid JWT to jwtUtil.getClaims
+    - jwtUtil.getClaims passes the JWT (again) to jwtParser.parseClaimsJws, so in theory, we are
+      guaranteed that no exception will be raised
+    - therefore, claims can never be null
+     */
   }
 
   @Test
