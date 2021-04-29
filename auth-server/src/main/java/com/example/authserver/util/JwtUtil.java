@@ -2,9 +2,12 @@ package com.example.authserver.util;
 
 import com.example.authserver.AuthProperties;
 import com.example.authserver.entities.Permission;
+import com.example.authserver.repositories.UserRepository;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
@@ -20,26 +23,37 @@ public class JwtUtil
 
     private final JwtParser jwtParser;
 
+    private final UserRepository userRepository;
+
     @Autowired
-    public JwtUtil(AuthProperties properties)
+    public JwtUtil(AuthProperties properties, UserRepository userRepository)
     {
         this.authProperties = properties;
-        jwtParser = Jwts.parserBuilder()
+        this.jwtParser = Jwts.parserBuilder()
                 // param here should be base64 encoded key
                 .setSigningKey(authProperties.getKey())
                 .build();
+        this.userRepository = userRepository;
     }
 
-    public boolean validateJwt(String jws)
+    public boolean validateJwt(String authHeader)
     {
         try {
-//        throws these exceptions on failure:
-//        ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException, IllegalArgumentException
-        Jws<Claims> claims = jwtParser.parseClaimsJws(jws);
+            Jws<Claims> claims = jwtParser.parseClaimsJws(authHeader.substring(7));
+
+            // issuer is wrong
+            if (claims == null || !claims.getBody().getIssuer().equals(authProperties.getIssuer()))
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
+
+            // subject of token exists in db
+            if (userRepository.findByEmail(claims.getBody().getSubject()) == null)
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
         return true;
         }
+//        throws these exceptions on failure to parse correctly:
+//        ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException, IllegalArgumentException, NullPointerException
+//        Any exception means invalid jwt, so return false
         catch (Exception e) {
-//            any exception means invalid, so return false
             return false;
         }
     }

@@ -1,8 +1,8 @@
 package com.example.authserver.controllers;
 
 import com.example.authserver.AuthProperties;
+import com.example.authserver.entities.HaircutUser;
 import com.example.authserver.entities.Permission;
-import com.example.authserver.entities.User;
 import com.example.authserver.repositories.UserRepository;
 import com.example.authserver.requests.AuthRequest;
 import com.example.authserver.requests.NewUserRequest;
@@ -28,69 +28,61 @@ class AuthController {
     AuthController(UserRepository repository, AuthProperties authProperties) {
         this.repository = repository;
         this.authProperties = authProperties;
-        this.jwtUtil = new JwtUtil(authProperties);
+        this.jwtUtil = new JwtUtil(authProperties, repository);
     }
 
     @PostMapping("/auth")
     Map<String, String> getJWT(@RequestBody AuthRequest authRequest)
     {
-        User user = repository.findByUsername(authRequest.getEmail());
-        if (user == null || !authRequest.getPassword().equals(user.getPassword()))
+        HaircutUser haircutUser = repository.findByEmail(authRequest.getEmail());
+        if (haircutUser == null || !authRequest.getPassword().equals(haircutUser.getPassword()))
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
 
-        return Collections.singletonMap("jwt", jwtUtil.buildJws(user.getEmail(), user.getPermission()));
+        return Collections.singletonMap("jwt", jwtUtil.buildJws(haircutUser.getEmail(), haircutUser.getPermission()));
     }
 
     @PostMapping("/validate")
     Map<String, String> validateJWT(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth)
     {
-        // sets to null if invalid jwt
-        Jws<Claims> claims = getClaimsFromHeader(auth);
-
-        // valid jwt || issuer is wrong
-        if (claims == null || !claims.getBody().getIssuer().equals(authProperties.getIssuer()))
+        if (!jwtUtil.validateJwt(auth))
+        {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
-
-        // subject of token exists in db
-        if (repository.findByUsername(claims.getBody().getSubject()) == null)
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
-
-
+        }
         return Collections.singletonMap("jwt", "valid");
     }
 
     @GetMapping("/users")
-    List<User> allUsers() {
+    List<HaircutUser> allUsers() {
         return repository.findAll();
     }
 
     @PostMapping("/users")
-    User newUser(@RequestBody NewUserRequest newUser, @RequestHeader(HttpHeaders.AUTHORIZATION) String auth)
+    HaircutUser newUser(@RequestBody NewUserRequest newUser, @RequestHeader(HttpHeaders.AUTHORIZATION) String auth)
     {
         Jws<Claims> claims = jwtUtil.getClaims(auth);
         Permission claimPermission = Permission.valueOf((String) claims.getBody().get("type"));
 
         if (!claimPermission.hasPermission(Permission.valueOf(newUser.getPermission())))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Permission");
-        return repository.save(new User(newUser.getEmail(), newUser.getPassword(), Permission.USER));
+        return repository.save(new HaircutUser(newUser.getEmail(), newUser.getPassword(), Permission.USER));
     }
 
     // Single item
     @GetMapping("/user/{id}")
-    User getUser(@PathVariable Long id) {
+    HaircutUser getUser(@PathVariable Long id) {
 
         return repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("User with id \"%s\" not found", id)));
     }
 
     @PutMapping("/user/{id}")
-    User replaceUser(@PathVariable Long id, @RequestBody AuthRequest authRequest, @RequestHeader(HttpHeaders.AUTHORIZATION) String auth)
+    HaircutUser replaceUser(@PathVariable Long id, @RequestBody AuthRequest authRequest, @RequestHeader(HttpHeaders.AUTHORIZATION) String auth)
     {
         return repository.findById(id).map(
-                user -> {
-                    user.setEmail(authRequest.getEmail());
-                    user.setPassword(authRequest.getPassword());
-                    return repository.save(user);
+                haircutUser -> {
+                    haircutUser.setEmail(authRequest.getEmail());
+                    haircutUser.setPassword(authRequest.getPassword());
+                    return repository.save(haircutUser);
                 })
                 .orElseThrow(() ->
                         new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("User with id \"%s\" not found", id)));

@@ -12,7 +12,7 @@ import javax.persistence.*;
 @RequiredArgsConstructor
 @NoArgsConstructor
 @Table(name = "HAIRCUT_USERS")
-public class User
+public class HaircutUser
 {
     @Id @GeneratedValue
     private Long id;
