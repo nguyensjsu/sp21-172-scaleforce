@@ -34,12 +34,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                 .exceptionHandling()
                 .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+//                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 // allow JWT functions without valid JWT
                 .antMatchers("/auth", "/validate").permitAll()
                 // Allow user creation without valid JWT
                 .antMatchers(HttpMethod.POST, "/users").permitAll()
-                .anyRequest().hasAuthority("OFFICE")
+                .anyRequest().hasAnyAuthority("OFFICE","ADMIN")
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 

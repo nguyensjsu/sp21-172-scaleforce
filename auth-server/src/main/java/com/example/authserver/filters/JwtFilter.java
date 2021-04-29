@@ -36,7 +36,6 @@ public class JwtFilter extends OncePerRequestFilter
     {
         String authHeader = request.getHeader("Authorization");
 
-
         if (jwtUtil.validateJwt(authHeader))
         {
             // load user details from db

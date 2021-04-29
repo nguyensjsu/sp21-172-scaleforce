@@ -4,8 +4,9 @@ import com.example.authserver.AuthProperties;
 import com.example.authserver.entities.HaircutUser;
 import com.example.authserver.entities.Permission;
 import com.example.authserver.repositories.UserRepository;
-import com.example.authserver.requests.AuthRequest;
 import com.example.authserver.requests.NewUserRequest;
+import com.example.authserver.requests.PutUserRequest;
+import com.example.authserver.requests.UserRequest;
 import com.example.authserver.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -32,10 +33,10 @@ class AuthController {
     }
 
     @PostMapping("/auth")
-    Map<String, String> getJWT(@RequestBody AuthRequest authRequest)
+    Map<String, String> getJWT(@RequestBody UserRequest userRequest)
     {
-        HaircutUser haircutUser = repository.findByEmail(authRequest.getEmail());
-        if (haircutUser == null || !authRequest.getPassword().equals(haircutUser.getPassword()))
+        HaircutUser haircutUser = repository.findByEmail(userRequest.getEmail());
+        if (haircutUser == null || !userRequest.getPassword().equals(haircutUser.getPassword()))
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
 
         return Collections.singletonMap("jwt", jwtUtil.buildJws(haircutUser.getEmail(), haircutUser.getPermission()));
@@ -57,14 +58,23 @@ class AuthController {
     }
 
     @PostMapping("/users")
-    HaircutUser newUser(@RequestBody NewUserRequest newUser, @RequestHeader(HttpHeaders.AUTHORIZATION) String auth)
+    HaircutUser newUser(@RequestBody NewUserRequest newUser, @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String auth)
     {
-        Jws<Claims> claims = jwtUtil.getClaims(auth);
-        Permission claimPermission = Permission.valueOf((String) claims.getBody().get("type"));
-
-        if (!claimPermission.hasPermission(Permission.valueOf(newUser.getPermission())))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Permission");
-        return repository.save(new HaircutUser(newUser.getEmail(), newUser.getPassword(), Permission.USER));
+        Permission permission = Permission.USER;
+        if (auth != null)
+        {
+            Jws<Claims> claims = jwtUtil.getClaims(auth.substring(7));
+            // get permission from header if valid
+            Permission claimPermission =
+                    claims != null ?
+                            Permission.valueOf((String) claims.getBody().get("type")) :
+                            Permission.USER;
+            // if they attempt to create an account with more permissions
+            if (!claimPermission.hasPermission(Permission.valueOf(newUser.getPermission())))
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Permission");
+            permission = Permission.valueOf(newUser.getPermission());
+        }
+        return repository.save(new HaircutUser(newUser.getEmail(), newUser.getPassword(), permission));
     }
 
     // Single item
@@ -75,13 +85,20 @@ class AuthController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("User with id \"%s\" not found", id)));
     }
 
-    @PutMapping("/user/{id}")
-    HaircutUser replaceUser(@PathVariable Long id, @RequestBody AuthRequest authRequest, @RequestHeader(HttpHeaders.AUTHORIZATION) String auth)
+    @PatchMapping("/user/{id}")
+    HaircutUser UpdatePassword(@PathVariable Long id, @RequestBody PutUserRequest userRequest, @RequestHeader(HttpHeaders.AUTHORIZATION) String auth)
     {
+        Jws<Claims> claims = jwtUtil.getClaims(auth);
+
+        // if token email doesn't match body email
+        if (claims == null || !claims.getBody().getSubject().equals(userRequest.getEmail()))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid credentials");
+
+
         return repository.findById(id).map(
                 haircutUser -> {
-                    haircutUser.setEmail(authRequest.getEmail());
-                    haircutUser.setPassword(authRequest.getPassword());
+                    if (userRequest.getOldPassword().equals(haircutUser.getPassword()))
+                        haircutUser.setPassword(userRequest.getNewPassword());
                     return repository.save(haircutUser);
                 })
                 .orElseThrow(() ->
@@ -92,11 +109,5 @@ class AuthController {
     void deleteUser(@PathVariable Long id)
     {
         repository.deleteById(id);
-    }
-
-    private Jws<Claims> getClaimsFromHeader(String authHeader)
-    {
-        String jwt = authHeader.substring(7);
-        return jwtUtil.getClaims(jwt);
     }
 }

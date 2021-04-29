@@ -3,7 +3,10 @@ package com.example.authserver.util;
 import com.example.authserver.AuthProperties;
 import com.example.authserver.entities.Permission;
 import com.example.authserver.repositories.UserRepository;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtParser;
+import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -63,7 +66,7 @@ public class JwtUtil
         // Also validates the jws
         try {
             return jwtParser.parseClaimsJws(jws);
-        } catch (JwtException e) { return null; }
+        } catch (Exception e) { return null; }
     }
 
     public String buildJws(String username, Permission privilege)
