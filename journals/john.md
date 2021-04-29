@@ -4,9 +4,9 @@
 
 ### Tasks
 
-[] Created the cashier app frontend boilerplate project.
-[] Pair programmed with Jesus on frontend tools selections and implementations.
-[] Wrote out the requirements and data models needed for our application.
+- [ ] Created the cashier app frontend boilerplate project.
+- [ ] Pair programmed with Jesus on frontend tools selections and implementations.
+- [ ] Wrote out the requirements and data models needed for our application.
 
 ### Accomplishments
 
@@ -21,8 +21,8 @@
 
 ### Tasks
 
-TODO "A snapshot (point-in-time) image of the Team's Task Board highlighting
-which "Card" you worked on"
+- [ ] Setup backdoor dashboard
+- [ ] Create User, Appointments, Sales View
 
 ### Accomplishments
 
