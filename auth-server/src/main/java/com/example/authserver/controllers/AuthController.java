@@ -1,92 +1,113 @@
 package com.example.authserver.controllers;
 
 import com.example.authserver.AuthProperties;
-import com.example.authserver.entities.Permission;
-import com.example.authserver.entities.User;
+import com.example.authserver.entities.HaircutUser;
+import com.example.authserver.entities.Role;
 import com.example.authserver.repositories.UserRepository;
-import com.example.authserver.requests.AuthRequest;
+import com.example.authserver.requests.NewUserRequest;
+import com.example.authserver.requests.PatchUserRequest;
+import com.example.authserver.requests.UserRequest;
 import com.example.authserver.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 @RestController
 class AuthController {
 
     private final UserRepository repository;
-    private final AuthProperties authProperties;
+    private final JwtUtil jwtUtil;
 
     AuthController(UserRepository repository, AuthProperties authProperties) {
         this.repository = repository;
-        this.authProperties = authProperties;
+        this.jwtUtil = new JwtUtil(authProperties, repository);
     }
 
     @PostMapping("/auth")
-    Map<String, String> getJWT(@RequestBody AuthRequest authRequest)
+    Map<String, String> getJWT(@RequestBody UserRequest userRequest)
     {
-        User user = repository.findByUsername(authRequest.getUsername());
-        if (user == null || !authRequest.getPassword().equals(user.getPassword()))
+        HaircutUser haircutUser = repository.findByEmail(userRequest.getEmail());
+        if (haircutUser == null || !userRequest.getPassword().equals(haircutUser.getPassword()))
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
 
-        return Collections.singletonMap("jwt", new JwtUtil(authProperties).buildJws(user.getUsername(), user.getPermission()));
+        return Collections.singletonMap("jwt", jwtUtil.buildJws(haircutUser.getEmail(), haircutUser.getRole()));
     }
 
     @PostMapping("/validate")
     Map<String, String> validateJWT(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth)
     {
-        String jwt = auth.substring(7);
-        JwtUtil jwtUtil = new JwtUtil(authProperties);
-
-        // validates the jwt
-        if (!jwtUtil.validateJwt(jwt))
+        if (!jwtUtil.validateJwt(auth))
+        {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
-
-        Jws<Claims> claims = jwtUtil.getClaims(jwt);
-        // issuer matches
-        if (claims == null || !claims.getBody().getIssuer().equals(authProperties.getIssuer()))
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
-
-        // subject of token exists in db
-        if (repository.findByUsername(claims.getBody().getSubject()) == null)
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
-
-
+        }
         return Collections.singletonMap("jwt", "valid");
     }
 
+    @GetMapping("/users")
+    @Secured({"ROLE_ADMIN", "ROLE_OFFICE"})
+    List<HaircutUser> allUsers() {
+        return repository.findAll();
+    }
+
     @PostMapping("/users")
-    User newUser(@RequestBody AuthRequest newUser) {
-        return repository.save(new User(newUser.getUsername(), newUser.getPassword(), Permission.USER));
+    HaircutUser newUser(@RequestBody NewUserRequest newUser, @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String auth)
+    {
+        Role role = Role.ROLE_USER;
+        if (auth != null)
+        {
+            Jws<Claims> claims = jwtUtil.getClaims(auth);
+            // get permission from header if valid
+            Role claimRole =
+                    claims != null ?
+                            Role.valueOf((String) claims.getBody().get("type")) :
+                            Role.ROLE_USER;
+            // if they attempt to create an account with more permissions
+            if (!claimRole.hasPermission(Role.valueOf(newUser.getPermission())))
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Permission");
+            role = Role.valueOf(newUser.getPermission());
+        }
+        return repository.save(new HaircutUser(newUser.getEmail(), newUser.getPassword(), role));
     }
 
     // Single item
     @GetMapping("/user/{id}")
-    User getUser(@PathVariable Long id) {
+    @Secured({"ROLE_ADMIN", "ROLE_OFFICE"})
+    HaircutUser getUserById(@PathVariable Long id) {
 
         return repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("User with id \"%s\" not found", id)));
     }
 
-    @PutMapping("/user/{id}")
-    User replaceUser(@PathVariable Long id, @RequestBody AuthRequest authRequest)
+    @PatchMapping("/user/{id}")
+    HaircutUser UpdatePassword(@PathVariable Long id, @RequestBody PatchUserRequest userRequest, @RequestHeader(HttpHeaders.AUTHORIZATION) String auth)
     {
+        Jws<Claims> claims = jwtUtil.getClaims(auth);
+
+        // if token email doesn't match body email
+        if (claims == null || !claims.getBody().getSubject().equals(userRequest.getEmail()))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid credentials");
+
+
         return repository.findById(id).map(
-                user -> {
-                    user.setUsername(authRequest.getUsername());
-                    user.setPassword(authRequest.getPassword());
-                    return repository.save(user);
+                haircutUser -> {
+                    if (userRequest.getOldPassword().equals(haircutUser.getPassword()))
+                        haircutUser.setPassword(userRequest.getNewPassword());
+                    return repository.save(haircutUser);
                 })
                 .orElseThrow(() ->
                         new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("User with id \"%s\" not found", id)));
     }
 
     @DeleteMapping("/user/{id}")
+    @Secured({"ROLE_ADMIN", "ROLE_OFFICE"})
     void deleteUser(@PathVariable Long id)
     {
         repository.deleteById(id);

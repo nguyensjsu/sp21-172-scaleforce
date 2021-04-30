@@ -12,19 +12,19 @@ import javax.persistence.*;
 @RequiredArgsConstructor
 @NoArgsConstructor
 @Table(name = "HAIRCUT_USERS")
-public class User
+public class HaircutUser
 {
     @Id @GeneratedValue
     private Long id;
 
     @NonNull @Column(unique=true)
-    private String username;
+    private String email;
 
     @NonNull
     private String password;
 
     @NonNull
-    private Permission permission;
+    private Role role;
 }
 
 
