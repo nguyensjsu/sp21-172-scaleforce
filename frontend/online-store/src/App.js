@@ -8,6 +8,7 @@ import {
 import Navbar from './components/Navbar'
 import Signup from './screens/Auth/Signup'
 import Login from './screens/Auth/Login'
+import Home from "./screens/Home";
 
 export default function App() {
   return (
@@ -19,6 +20,9 @@ export default function App() {
         </Route>
         <Route path="/login">
           <Login/>
+        </Route>
+        <Route path="/">
+          <Home/>
         </Route>
       </Switch>
     </Router>
