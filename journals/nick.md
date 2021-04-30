@@ -34,18 +34,23 @@ I also had a bit of trouble correctly externalizing the config, but after lookin
 
 ### Tasks
 
-TODO "A snapshot (point-in-time) image of the Team's Task Board highlighting
-which "Card" you worked on"
+For this sprint I worked on this on this issue: [Add additionnal Auth functionality](https://github.com/nguyensjsu/sp21-172-scaleforce/issues/12)
 
 ### Accomplishments
+The Auth server now is in a great state and all endpoints are fully functional. I messed up the pattern for authentication and used an interceptor instead of the more powerful filter, so I switched that over to get the correct permissions. I made sure that 
 
-TODO "A discussion of your accomplishments that week with a list of links to
-your Code Commits and PRs"
+Commits: 
+
+https://github.com/nguyensjsu/sp21-172-scaleforce/pull/16/commits
+
+PRs:
+
+https://github.com/nguyensjsu/sp21-172-scaleforce/pull/16
 
 ### Challenges
+The main challenge was switching the pattern for authentication. Interceptors were not the correct usage as you really want to use the filter pattern as it plays nicely with Spring Security.
+I needed to containerize the User class yet extend the UserDetails from Spring Security to get around the first part, add a new filter, then finally instead of using the Security config, I added a default requirement for authentication of any kind (a valid JWT is provided), turned on the ability to use @Secured, then used that to keep out users that can get authentication but lack the specific permission to access an endpoint
 
-TODO "A discussion of the challenges you faced that week and how you resolved
-those issues"
 
 ## Week 3: 4/29 - 5/6
 
