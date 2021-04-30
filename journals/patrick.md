@@ -29,18 +29,21 @@ prototype.](https://github.com/nguyensjsu/sp21-172-scaleforce/blob/main/prototyp
 
 ### Tasks
 
-TODO "A snapshot (point-in-time) image of the Team's Task Board highlighting
-which "Card" you worked on"
+![patrick tasks week 2](./images/patrick/patrick-tasks-2.png)
 
 ### Accomplishments
 
-TODO "A discussion of your accomplishments that week with a list of links to
-your Code Commits and PRs"
+I primarily worked on [Auth v1
+tests](https://github.com/nguyensjsu/sp21-172-scaleforce/issues/13) and [Create
+local deployment
+scripts](https://github.com/nguyensjsu/sp21-172-scaleforce/issues/15). I also
+did some informal QA for the [Auth server round
+2](https://github.com/nguyensjsu/sp21-172-scaleforce/pull/16) PR.
 
 ### Challenges
 
-TODO "A discussion of the challenges you faced that week and how you resolved
-those issues"
+Nothing too major. Did have to deepen my knowledge re: JWTs and working with
+with Postman, but Nick was very helpful in that regard.
 
 ## Week 3: 4/29 - 5/6
 
