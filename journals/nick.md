@@ -37,7 +37,7 @@ I also had a bit of trouble correctly externalizing the config, but after lookin
 For this sprint I worked on this on this issue: [Add additionnal Auth functionality](https://github.com/nguyensjsu/sp21-172-scaleforce/issues/12)
 
 ### Accomplishments
-The Auth server now is in a great state and all endpoints are fully functional. I messed up the pattern for authentication and used an interceptor instead of the more powerful filter, so I switched that over to get the correct permissions. I made sure that 
+The Auth server now is in a great state and all endpoints are fully functional. I messed up the pattern for authentication and used an interceptor instead of the more powerful filter, so I switched that over to get the correct permissions. I coordinated with Patrick to make sure we are getting the correct functionality with the changes and now the auth server is complete waiting for additional requirements to be genereated from any discussion with the frontend
 
 Commits: 
 
