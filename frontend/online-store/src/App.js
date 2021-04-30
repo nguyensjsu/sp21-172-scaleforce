@@ -5,12 +5,14 @@ import {
   Route
 } from "react-router-dom";
 
+import Navbar from './components/Navbar'
 import Signup from './screens/Auth/Signup'
 import Login from './screens/Auth/Login'
 
 export default function App() {
   return (
     <Router>
+      <Navbar/>
       <Switch>
         <Route path="/signup">
           <Signup/>
