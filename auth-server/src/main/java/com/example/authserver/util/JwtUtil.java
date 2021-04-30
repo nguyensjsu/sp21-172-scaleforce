@@ -61,11 +61,11 @@ public class JwtUtil
         }
     }
 
-    public Jws<Claims> getClaims(String jws)
+    public Jws<Claims> getClaims(String authHeader)
     {
         // Also validates the jws
         try {
-            return jwtParser.parseClaimsJws(jws);
+            return jwtParser.parseClaimsJws(authHeader.substring(7));
         } catch (Exception e) { return null; }
     }
 

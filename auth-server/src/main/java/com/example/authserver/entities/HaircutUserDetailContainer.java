@@ -30,7 +30,6 @@ public class HaircutUserDetailContainer implements UserDetails
             if (haircutUser.getPermission().hasPermission(p))
                 authorities.add(new SimpleGrantedAuthority(p.toString()));
         }
-        logger.info(String.format("Authorized %s with permissions: %s", haircutUser.getEmail(), authorities));
         return authorities;
     }
 

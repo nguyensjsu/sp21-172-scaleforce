@@ -40,7 +40,7 @@ public class JwtFilter extends OncePerRequestFilter
         {
             // load user details from db
             UserDetails userDetails = userService
-                    .loadUserByUsername(jwtUtil.getClaims(authHeader.substring(7))
+                    .loadUserByUsername(jwtUtil.getClaims(authHeader)
                             .getBody()
                             .getSubject());
 
@@ -52,7 +52,7 @@ public class JwtFilter extends OncePerRequestFilter
             usernamePasswordAuthenticationToken
                     .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-            // tell security request is authenticated
+            // tell security context request is authenticated
             SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
         }
 

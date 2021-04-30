@@ -5,13 +5,14 @@ import com.example.authserver.entities.HaircutUser;
 import com.example.authserver.entities.Permission;
 import com.example.authserver.repositories.UserRepository;
 import com.example.authserver.requests.NewUserRequest;
-import com.example.authserver.requests.PutUserRequest;
+import com.example.authserver.requests.PatchUserRequest;
 import com.example.authserver.requests.UserRequest;
 import com.example.authserver.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -53,6 +54,7 @@ class AuthController {
     }
 
     @GetMapping("/users")
+    @Secured({"ADMIN", "OFFICE"})
     List<HaircutUser> allUsers() {
         return repository.findAll();
     }
@@ -63,7 +65,7 @@ class AuthController {
         Permission permission = Permission.USER;
         if (auth != null)
         {
-            Jws<Claims> claims = jwtUtil.getClaims(auth.substring(7));
+            Jws<Claims> claims = jwtUtil.getClaims(auth);
             // get permission from header if valid
             Permission claimPermission =
                     claims != null ?
@@ -79,14 +81,15 @@ class AuthController {
 
     // Single item
     @GetMapping("/user/{id}")
-    HaircutUser getUser(@PathVariable Long id) {
+    @Secured({"ADMIN", "OFFICE"})
+    HaircutUser getUserById(@PathVariable Long id) {
 
         return repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("User with id \"%s\" not found", id)));
     }
 
     @PatchMapping("/user/{id}")
-    HaircutUser UpdatePassword(@PathVariable Long id, @RequestBody PutUserRequest userRequest, @RequestHeader(HttpHeaders.AUTHORIZATION) String auth)
+    HaircutUser UpdatePassword(@PathVariable Long id, @RequestBody PatchUserRequest userRequest, @RequestHeader(HttpHeaders.AUTHORIZATION) String auth)
     {
         Jws<Claims> claims = jwtUtil.getClaims(auth);
 
@@ -106,6 +109,7 @@ class AuthController {
     }
 
     @DeleteMapping("/user/{id}")
+    @Secured({"ADMIN", "OFFICE"})
     void deleteUser(@PathVariable Long id)
     {
         repository.deleteById(id);
