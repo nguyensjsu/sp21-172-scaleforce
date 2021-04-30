@@ -5,7 +5,7 @@ import TextInput from '../../components/TextInput';
 
 export default function Home() {
   return (
-    <div>
+    <div className="flex justify-center my-20">
       <div className="bg-gray-100 w-2/5 p-5">
         <TextInput
           label="Email"
