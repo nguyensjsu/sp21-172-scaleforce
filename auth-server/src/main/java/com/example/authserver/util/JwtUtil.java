@@ -1,7 +1,7 @@
 package com.example.authserver.util;
 
 import com.example.authserver.AuthProperties;
-import com.example.authserver.entities.Permission;
+import com.example.authserver.entities.Role;
 import com.example.authserver.repositories.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -69,7 +69,7 @@ public class JwtUtil
         } catch (Exception e) { return null; }
     }
 
-    public String buildJws(String username, Permission privilege)
+    public String buildJws(String username, Role privilege)
     {
         byte[] decodedKey = Base64.getDecoder().decode(authProperties.getKey());
         Key key = new SecretKeySpec(decodedKey, "HmacSHA256");

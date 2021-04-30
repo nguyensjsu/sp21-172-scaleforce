@@ -25,9 +25,9 @@ public class HaircutUserDetailContainer implements UserDetails
     public Collection<? extends GrantedAuthority> getAuthorities()
     {
         ArrayList<GrantedAuthority> authorities = new ArrayList<>();
-        for (Permission p : Permission.values())
+        for (Role p : Role.values())
         {
-            if (haircutUser.getPermission().hasPermission(p))
+            if (haircutUser.getRole().hasPermission(p))
                 authorities.add(new SimpleGrantedAuthority(p.toString()));
         }
         return authorities;

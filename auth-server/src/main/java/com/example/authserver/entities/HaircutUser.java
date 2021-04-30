@@ -24,7 +24,7 @@ public class HaircutUser
     private String password;
 
     @NonNull
-    private Permission permission;
+    private Role role;
 }
 
 

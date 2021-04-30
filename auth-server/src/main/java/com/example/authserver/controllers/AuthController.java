@@ -2,7 +2,7 @@ package com.example.authserver.controllers;
 
 import com.example.authserver.AuthProperties;
 import com.example.authserver.entities.HaircutUser;
-import com.example.authserver.entities.Permission;
+import com.example.authserver.entities.Role;
 import com.example.authserver.repositories.UserRepository;
 import com.example.authserver.requests.NewUserRequest;
 import com.example.authserver.requests.PatchUserRequest;
@@ -24,12 +24,10 @@ import java.util.Map;
 class AuthController {
 
     private final UserRepository repository;
-    private final AuthProperties authProperties;
     private final JwtUtil jwtUtil;
 
     AuthController(UserRepository repository, AuthProperties authProperties) {
         this.repository = repository;
-        this.authProperties = authProperties;
         this.jwtUtil = new JwtUtil(authProperties, repository);
     }
 
@@ -40,7 +38,7 @@ class AuthController {
         if (haircutUser == null || !userRequest.getPassword().equals(haircutUser.getPassword()))
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
 
-        return Collections.singletonMap("jwt", jwtUtil.buildJws(haircutUser.getEmail(), haircutUser.getPermission()));
+        return Collections.singletonMap("jwt", jwtUtil.buildJws(haircutUser.getEmail(), haircutUser.getRole()));
     }
 
     @PostMapping("/validate")
@@ -54,7 +52,7 @@ class AuthController {
     }
 
     @GetMapping("/users")
-    @Secured({"ADMIN", "OFFICE"})
+    @Secured({"ROLE_ADMIN", "ROLE_OFFICE"})
     List<HaircutUser> allUsers() {
         return repository.findAll();
     }
@@ -62,26 +60,26 @@ class AuthController {
     @PostMapping("/users")
     HaircutUser newUser(@RequestBody NewUserRequest newUser, @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String auth)
     {
-        Permission permission = Permission.USER;
+        Role role = Role.ROLE_USER;
         if (auth != null)
         {
             Jws<Claims> claims = jwtUtil.getClaims(auth);
             // get permission from header if valid
-            Permission claimPermission =
+            Role claimRole =
                     claims != null ?
-                            Permission.valueOf((String) claims.getBody().get("type")) :
-                            Permission.USER;
+                            Role.valueOf((String) claims.getBody().get("type")) :
+                            Role.ROLE_USER;
             // if they attempt to create an account with more permissions
-            if (!claimPermission.hasPermission(Permission.valueOf(newUser.getPermission())))
+            if (!claimRole.hasPermission(Role.valueOf(newUser.getPermission())))
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Permission");
-            permission = Permission.valueOf(newUser.getPermission());
+            role = Role.valueOf(newUser.getPermission());
         }
-        return repository.save(new HaircutUser(newUser.getEmail(), newUser.getPassword(), permission));
+        return repository.save(new HaircutUser(newUser.getEmail(), newUser.getPassword(), role));
     }
 
     // Single item
     @GetMapping("/user/{id}")
-    @Secured({"ADMIN", "OFFICE"})
+    @Secured({"ROLE_ADMIN", "ROLE_OFFICE"})
     HaircutUser getUserById(@PathVariable Long id) {
 
         return repository.findById(id)
@@ -109,7 +107,7 @@ class AuthController {
     }
 
     @DeleteMapping("/user/{id}")
-    @Secured({"ADMIN", "OFFICE"})
+    @Secured({"ROLE_ADMIN", "ROLE_OFFICE"})
     void deleteUser(@PathVariable Long id)
     {
         repository.deleteById(id);
