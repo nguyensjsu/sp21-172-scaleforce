@@ -3,9 +3,9 @@ package com.example.authserver.requests;
 import lombok.Data;
 
 @Data
-public class AuthRequest
+public class NewUserRequest
 {
-    private String username;
+    private String email;
     private String password;
-
+    private String permission;
 }

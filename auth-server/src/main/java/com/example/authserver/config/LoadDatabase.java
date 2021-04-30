@@ -1,7 +1,7 @@
 package com.example.authserver.config;
 
-import com.example.authserver.entities.Permission;
-import com.example.authserver.entities.User;
+import com.example.authserver.entities.HaircutUser;
+import com.example.authserver.entities.Role;
 import com.example.authserver.repositories.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,9 +18,9 @@ class LoadDatabase {
     CommandLineRunner initDatabase(UserRepository repository) {
 
         return args -> {
-            log.info("Preloading " + repository.save(new User("Nick", "N", Permission.ADMIN)));
-            log.info("Preloading " + repository.save(new User("G", "G", Permission.OFFICE)));
-            log.info("Preloading " + repository.save(new User("Jake", "J", Permission.USER)));
+            log.info("Preloading " + repository.save(new HaircutUser("Nick", "N", Role.ROLE_ADMIN)));
+            log.info("Preloading " + repository.save(new HaircutUser("G", "G", Role.ROLE_OFFICE)));
+            log.info("Preloading " + repository.save(new HaircutUser("Jake", "J", Role.ROLE_USER)));
         };
     }
 }

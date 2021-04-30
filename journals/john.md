@@ -4,9 +4,9 @@
 
 ### Tasks
 
-[] Created the cashier app frontend boilerplate project.
-[] Pair programmed with Jesus on frontend tools selections and implementations.
-[] Wrote out the requirements and data models needed for our application.
+- [ ] Created the cashier app frontend boilerplate project.
+- [ ] Pair programmed with Jesus on frontend tools selections and implementations.
+- [ ] Wrote out the requirements and data models needed for our application.
 
 ### Accomplishments
 
@@ -21,18 +21,18 @@
 
 ### Tasks
 
-TODO "A snapshot (point-in-time) image of the Team's Task Board highlighting
-which "Card" you worked on"
+- [ ] Setup backdoor dashboard
+- [ ] Created nav bar
+- [ ] Create User, Appointments, Sales View
 
 ### Accomplishments
 
-TODO "A discussion of your accomplishments that week with a list of links to
-your Code Commits and PRs"
+[Branch of work](https://github.com/nguyensjsu/sp21-172-scaleforce/tree/week-2)
+I was able to get this working in this branch. This week was cut short due to other assignments. But I was able to build and test authenticated routing with react-router. That will be implemented tomorrow ideally!
 
 ### Challenges
 
-TODO "A discussion of the challenges you faced that week and how you resolved
-those issues"
+A challenged I faced was figuring out how we are going to work with hitting our proxy server. Lucky @patrick was able to point us in the right direction with a configutaion we can run!
 
 ## Week 3: 4/29 - 5/6
 

@@ -1,10 +1,16 @@
 package com.example.authserver.util;
 
 import com.example.authserver.AuthProperties;
-import com.example.authserver.entities.Permission;
-import io.jsonwebtoken.*;
+import com.example.authserver.entities.Role;
+import com.example.authserver.repositories.UserRepository;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtParser;
+import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
@@ -20,38 +26,50 @@ public class JwtUtil
 
     private final JwtParser jwtParser;
 
+    private final UserRepository userRepository;
+
     @Autowired
-    public JwtUtil(AuthProperties properties)
+    public JwtUtil(AuthProperties properties, UserRepository userRepository)
     {
         this.authProperties = properties;
-        jwtParser = Jwts.parserBuilder()
+        this.jwtParser = Jwts.parserBuilder()
                 // param here should be base64 encoded key
                 .setSigningKey(authProperties.getKey())
                 .build();
+        this.userRepository = userRepository;
     }
 
-    public boolean validateJwt(String jwt)
+    public boolean validateJwt(String authHeader)
     {
         try {
-//        throws these exceptions on failure:
-//        ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException, IllegalArgumentException
-        Jws<Claims> claims = jwtParser.parseClaimsJws(jwt);
+            Jws<Claims> claims = jwtParser.parseClaimsJws(authHeader.substring(7));
+
+            // issuer is wrong
+            if (claims == null || !claims.getBody().getIssuer().equals(authProperties.getIssuer()))
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
+
+            // subject of token exists in db
+            if (userRepository.findByEmail(claims.getBody().getSubject()) == null)
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
         return true;
         }
+//        throws these exceptions on failure to parse correctly:
+//        ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException, IllegalArgumentException, NullPointerException
+//        Any exception means invalid jwt, so return false
         catch (Exception e) {
-//            any exception means invalid, so return false
             return false;
         }
     }
 
-    public Jws<Claims> getClaims(String jwt)
+    public Jws<Claims> getClaims(String authHeader)
     {
+        // Also validates the jws
         try {
-            return jwtParser.parseClaimsJws(jwt);
-        } catch (JwtException e) { return null; }
+            return jwtParser.parseClaimsJws(authHeader.substring(7));
+        } catch (Exception e) { return null; }
     }
 
-    public String buildJws(String username, Permission privilege)
+    public String buildJws(String username, Role privilege)
     {
         byte[] decodedKey = Base64.getDecoder().decode(authProperties.getKey());
         Key key = new SecretKeySpec(decodedKey, "HmacSHA256");

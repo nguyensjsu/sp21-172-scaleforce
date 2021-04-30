@@ -1,10 +1,10 @@
 package com.example.authserver.repositories;
 
-import com.example.authserver.entities.User;
+import com.example.authserver.entities.HaircutUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository<User, Long>
+public interface UserRepository extends JpaRepository<HaircutUser, Long>
 {
-    User findByUsername(String username);
+    HaircutUser findByEmail(String email);
 
 }

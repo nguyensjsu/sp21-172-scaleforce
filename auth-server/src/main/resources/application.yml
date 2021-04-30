@@ -10,6 +10,6 @@ jwt:
   issuer: HaircutAuthServer
   window: 120
   key: dI77U8bhgMefJrG6qQpugl95n8bADM3shHbVO43vX+g=
-#server:
-#  error:
-#  include-message: always
+server:
+  error:
+    include-message: always
