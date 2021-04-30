@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 import Home from './screens/Home/Home';
 import Login from './screens/Auth/Login';
-import Signup from './screens/Auth/Signup';
 
 export default function App() {
   return (
@@ -11,9 +10,6 @@ export default function App() {
       <Switch>
         <Route path="/login">
           <Login />
-        </Route>
-        <Route path="/signup">
-          <Signup />
         </Route>
         <Route path="/">
           <Home />
