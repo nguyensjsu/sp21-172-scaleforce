@@ -1,6 +1,6 @@
 import React from 'react';
 import Button from '../../components/Button';
-import TextInput from "../../components/TextInput";
+import TextInput from '../../components/TextInput';
 
 export default function Home() {
   return (
@@ -12,12 +12,12 @@ export default function Home() {
           placeholder="email@thebarbershop.com"
         />
         <div className="pt-3">
-          <TextInput label="Password" type="password" placeholder="********" />
+          <TextInput label="Password" type="password" placeholder="********"/>
         </div>
         <div className="pt-3">
           <Button label="Submit" variant="primary" />
         </div>
       </div>
     </div>
-  );
+  )
 }
