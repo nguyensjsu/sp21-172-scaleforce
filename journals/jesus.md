@@ -26,18 +26,24 @@ Therefore, updated package.json to assure that only Node.js versions 11+ are use
 
 ### Tasks
 
-TODO "A snapshot (point-in-time) image of the Team's Task Board highlighting
-which "Card" you worked on"
+![jesus_task_week_2](./images/jesus/jesus-task-2.png)
 
 ### Accomplishments
 
-TODO "A discussion of your accomplishments that week with a list of links to
-your Code Commits and PRs"
+I finished the remaining front-end changes for cashier and online-store based on @John contributions to backoffice.
+[Login Pages for Apps](https://github.com/nguyensjsu/sp21-172-scaleforce/projects/1#card-59304339)
+
+- Login page
+- Signup Page
+- Navbar
+- CSS Changes 
+
+Also reasearched ways to share reusable components between the 3 React Apps to reduce redudancy.  
+[Bit](https://docs.bit.dev/docs/tutorials/bit-react-tutorial) and [Bit.dev](https://bit.dev/) seem to be the solution but require more research.
 
 ### Challenges
 
-TODO "A discussion of the challenges you faced that week and how you resolved
-those issues"
+Compile issues occurred when imported components. Was able to fix them by installing the appropriate React packages
 
 ## Week 3: 4/29 - 5/6
 
