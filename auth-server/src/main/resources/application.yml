@@ -6,10 +6,20 @@ spring:
     url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/auth
     username: root
     password: cmpe172
+
 jwt:
   issuer: HaircutAuthServer
   window: 120
   key: dI77U8bhgMefJrG6qQpugl95n8bADM3shHbVO43vX+g=
+
 server:
   error:
     include-message: always
+
+# Also need to disable auth on these endpoints to use them
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    # need the html to use this
+    enabled: false

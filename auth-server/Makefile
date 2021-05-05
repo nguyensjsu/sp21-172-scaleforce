@@ -12,3 +12,5 @@ test:
 
 rerun: clean run
 
+docs:
+	gradle clean generateOpenApiDocs --stacktrace
