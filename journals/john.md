@@ -43,8 +43,7 @@ which "Card" you worked on"
 
 ### Accomplishments
 
-TODO "A discussion of your accomplishments that week with a list of links to
-your Code Commits and PRs"
+[Added protected routes to react router](https://github.com/nguyensjsu/sp21-172-scaleforce/pull/27)
 
 ### Challenges
 
