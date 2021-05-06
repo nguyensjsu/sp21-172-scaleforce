@@ -41,6 +41,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                 .antMatchers("/auth", "/validate").permitAll()
                 // Allow user creation without valid JWT
                 .antMatchers(HttpMethod.POST, "/users").permitAll()
+                // OpenAPI endpoint
+//                .antMatchers(HttpMethod.GET, "/v3/api-docs").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

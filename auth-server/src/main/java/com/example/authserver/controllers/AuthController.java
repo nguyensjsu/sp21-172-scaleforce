@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +39,10 @@ class AuthController {
         if (haircutUser == null || !userRequest.getPassword().equals(haircutUser.getPassword()))
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
 
-        return Collections.singletonMap("jwt", jwtUtil.buildJws(haircutUser.getEmail(), haircutUser.getRole()));
+        HashMap<String, String> response = new HashMap<>();
+        response.put("jwt", jwtUtil.buildJws(haircutUser.getEmail(), haircutUser.getRole()));
+        response.put("uid", haircutUser.getId().toString());
+        return response;
     }
 
     @PostMapping("/validate")
