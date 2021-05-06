@@ -267,3 +267,10 @@ kubectl apply -f auth-server-ingress-rules.yml
 kubectl apply -f auth-server-strip-path.yml
 kubectl patch ingress auth-server -p  '{"metadata":{"annotations":{"konghq.com/override":"kong-strip-path"}}}'
 ```
+
+### `back-office`, `cashier`, `online-store`
+
+We can deploy `back-office` and our other React-based frontend apps on Heroku
+based on the instructions in [Heroku Buildpack for create-react-app
+](https://github.com/mars/create-react-app-buildpack#usage). One caveat: this
+method requires that each frontend app have its own git repository.
