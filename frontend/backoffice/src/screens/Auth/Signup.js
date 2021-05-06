@@ -1,7 +1,7 @@
 import Button from '../../components/Button';
 import TextInput from '../../components/TextInput';
 
-export default function Login() {
+export default function Signup() {
   return (
     <div className="flex justify-center my-20">
       <div className="bg-gray-100 w-2/5 p-5">
