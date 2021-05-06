@@ -182,3 +182,95 @@ scaleforce172/online-store
 ```
 
 `online-store` should now be running on `http://localhost:3000`
+
+## Cloud Deployment
+
+### `auth-server`
+
+#### Cloud SQL
+
+To store data for `auth-server`, we use an instance of MySQL provided by Cloud
+SQL. When creating the instance, we reuse the password used for our local
+deployment for consistency. We use version 8.0 (same as our local deployment).
+We choose the region closest to us (`us-west2 (Los Angeles)`) and opt for single
+zonal availability, though for production, we would use multiple zones to
+increase availability. We customize our instance by choosing minimum specs,
+though for production, we might need beefier specs. We enable a private IP. We
+disable backups.
+
+Once our instance is provisioned, we whitelist our personal IPs in order to
+access the instance through Workbench. Alternatively, administration can be
+performed via Cloud Shell. Finally, we initialize the instance based on
+`auth-server/scripts/schema.sql`.
+
+#### Google Kubernetes Engine
+
+To prepare first push the latest version of `auth-server` to Docker Hub:
+
+```zsh
+docker push scaleforce172/auth-server
+```
+
+##### Creating the Initial Deployment and ClusterIP
+
+We then spin up a standard Kubernetes cluster, setting the zone to some zone on
+the West coast. We connect our cluster to our Cloud SQL instance based on
+[Connecting from Google Kubernetes
+Engine](https://cloud.google.com/sql/docs/mysql/connect-kubernetes-engine#private-ip).
+For simplicity, we connect without using the Cloud SQL Auth proxy, though for
+production, the proxy is recommended due to better security features.
+
+We create a `auth-server-deployment.yml` to describe out `auth-server`
+Deployment and a `auth-server-service.yml` to describe our ClusterIP Service
+used to create a stable internal IP address that clients can send request to to
+hit the Deployment. We spin up our Deployment and ClusterIP:
+
+```bash
+kubectl create -f auth-server-deployment.yml --save-config
+kubectl create -f auth-server-service.yml
+```
+
+To test endpoints within the cluster network, we use a jumpbox. The workload is
+defined in `jumpbox.yml` and we run it as follows:
+
+```bash
+kubectl create -f jumpbox.yml
+```
+
+To get a shell, we run the following:
+
+```bash
+kubectl exec -it jumpbox -- /bin/bash
+```
+
+Finally, we install our favorite utilities:
+
+```bash
+apt update && apt install -y dnsutils vim tmux wget gnupg watch httpie
+```
+
+##### Kong Ingress
+
+To serve `auth-server` publicly, we use [Kong
+Ingress](https://docs.konghq.com/kubernetes-ingress-controller/1.2.x/deployment/gke/).
+
+We deploy the initial ingress controller:
+
+```bash
+kubectl create -f https://bit.ly/k4k8s
+```
+
+We then set up our ingress rules and strip paths:
+
+```bash
+kubectl apply -f auth-server-ingress-rules.yml
+kubectl apply -f auth-server-strip-path.yml
+kubectl patch ingress auth-server -p  '{"metadata":{"annotations":{"konghq.com/override":"kong-strip-path"}}}'
+```
+
+### `back-office`, `cashier`, `online-store`
+
+We can deploy `back-office` and our other React-based frontend apps on Heroku
+based on the instructions in [Heroku Buildpack for create-react-app
+](https://github.com/mars/create-react-app-buildpack#usage). One caveat: this
+method requires that each frontend app have its own git repository.
