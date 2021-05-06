@@ -38,17 +38,20 @@ A challenged I faced was figuring out how we are going to work with hitting our 
 
 ### Tasks
 
-TODO "A snapshot (point-in-time) image of the Team's Task Board highlighting
-which "Card" you worked on"
+![john week 3](./images/john/jg-1.png)
+
+- [x] add protected routes to the frontend of backoffice (will be copy pasted for the other apps)
+- [x] created the views and tables for the back office (can and will be reused in the other apps)
+- [x] started working with the auth server to add auth functionality to frontned
 
 ### Accomplishments
 
 [Added protected routes to react router](https://github.com/nguyensjsu/sp21-172-scaleforce/pull/27)
+[Added backoffice views](https://github.com/nguyensjsu/sp21-172-scaleforce/pull/27)
 
 ### Challenges
 
-TODO "A discussion of the challenges you faced that week and how you resolved
-those issues"
+I didn't face any challenges this week besides a very busy schedule :P
 
 ## Week 4: 5/6 - 5/13
 
