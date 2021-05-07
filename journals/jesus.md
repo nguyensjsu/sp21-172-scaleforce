@@ -49,18 +49,20 @@ Compile issues occurred when imported components. Was able to fix them by instal
 
 ### Tasks
 
-TODO "A snapshot (point-in-time) image of the Team's Task Board highlighting
-which "Card" you worked on"
+![jesus_task_week_3](./images/jesus/jesus_task_3.png)
 
 ### Accomplishments
 
-TODO "A discussion of your accomplishments that week with a list of links to
-your Code Commits and PRs"
+Started working on connection between React Apps and API.
+[Create a new User and Hash Passwords](https://github.com/nguyensjsu/sp21-172-scaleforce/projects/1#card-60550765)
+
+- installed axios
+- installed bcrypt
+- started testing connection to API
 
 ### Challenges
 
-TODO "A discussion of the challenges you faced that week and how you resolved
-those issues"
+First time use of axios has delayed my progress to get a working connection. Will continue to work on this task into week 4
 
 ## Week 4: 5/6 - 5/13
 
