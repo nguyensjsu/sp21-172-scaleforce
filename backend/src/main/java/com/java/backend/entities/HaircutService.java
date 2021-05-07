@@ -2,7 +2,9 @@ package com.java.backend.entities;
 
 public enum HaircutService
 {
-    TRIM(3, 15);
+    TRIM(3, 15),
+    CUT_AND_BEARD(45,30),
+    SHAVE(45,30);
 
     // cost in dollars
     private final int cost;

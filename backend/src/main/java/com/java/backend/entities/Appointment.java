@@ -21,12 +21,12 @@ public class Appointment
     private Long id;
 
     @NonNull
-    @Column(unique=true)
+//    @Column(unique=true)
     @Temporal(TemporalType.TIMESTAMP)
     private Date startDate;
 
     @NonNull
-    @Column(unique=true)
+//    @Column(unique=true)
     @Temporal(TemporalType.TIMESTAMP)
     private Date endDate;
 
