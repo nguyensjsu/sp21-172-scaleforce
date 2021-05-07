@@ -1,7 +1,6 @@
 spring:
-  mvc:
-    format:
-      date-time: yyyy-MM-dd HH:mm:ss
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
   jpa:
     hibernate:
       ddl-auto: create-drop

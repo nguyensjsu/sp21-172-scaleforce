@@ -22,13 +22,13 @@ public class Appointment
 
     @NonNull
     @Column(unique=true)
-    @DateTimeFormat
-    private String startDate;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date startDate;
 
     @NonNull
     @Column(unique=true)
-    @DateTimeFormat
-    private String endDate;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date endDate;
 
     @NonNull
     private String barber;
