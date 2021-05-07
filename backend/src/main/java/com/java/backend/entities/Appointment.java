@@ -6,10 +6,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 
@@ -24,18 +21,20 @@ public class Appointment
     private Long id;
 
     @NonNull
+    @Column(unique=true)
     @DateTimeFormat
-    private Date startDate;
+    private String startDate;
 
     @NonNull
+    @Column(unique=true)
     @DateTimeFormat
-    private Date endDate;
+    private String endDate;
 
     @NonNull
     private String barber;
 
     @NonNull
-    private HaircutService serviceId;
+    private HaircutService service;
 
     private String booked;
 }

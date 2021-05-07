@@ -1,4 +1,7 @@
 spring:
+  mvc:
+    format:
+      date-time: yyyy-MM-dd HH:mm:ss
   jpa:
     hibernate:
       ddl-auto: create-drop
@@ -18,3 +21,6 @@ springdoc:
   swagger-ui:
     # need the html to use this
     enabled: false
+
+auth:
+  url: http://localhost:8099

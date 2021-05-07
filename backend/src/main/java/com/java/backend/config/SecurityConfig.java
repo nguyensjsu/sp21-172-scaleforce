@@ -13,8 +13,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter
 {
-
-
     public SecurityConfig()
     {
 
@@ -29,10 +27,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                 .exceptionHandling()
                 .and()
                 .authorizeRequests()
-//                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 // OpenAPI endpoint
 //                .antMatchers(HttpMethod.GET, "/v3/api-docs").permitAll()
-                .anyRequest().authenticated()
+//                .antMatchers(HttpMethod.GET, "/user").permitAll()
+//                .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
