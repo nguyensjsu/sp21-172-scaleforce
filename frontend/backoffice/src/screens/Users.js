@@ -2,28 +2,33 @@ import Table from '../components/Table';
 
 const data = [
   {
-    col1: '9',
-    col2: '4',
-    col3: '$230.00',
+    col1: 'Jack Gisel',
+    col2: 'jackgisel@gmail.com',
+    col3: '23',
+  },
+  {
+    col1: 'Jesus',
+    col2: 'jesus@gmail.com',
+    col3: '10',
   },
 ];
 
 const columns = [
   {
-    Header: 'Users',
+    Header: 'Name',
     accessor: 'col1',
   },
   {
-    Header: 'Appointments',
+    Header: 'Email',
     accessor: 'col2',
   },
   {
-    Header: 'Income',
+    Header: 'Appoints',
     accessor: 'col3',
   },
 ];
 
-const Dashboard = () => {
+const Users = () => {
   return (
     <div className="flex justify-center content-center">
       <Table data={data} columns={columns} />
@@ -31,4 +36,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default Users;
