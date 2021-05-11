@@ -7,6 +7,8 @@ import com.example.authserver.repositories.UserRepository;
 import com.example.authserver.requests.NewUserRequest;
 import com.example.authserver.requests.PatchUserRequest;
 import com.example.authserver.requests.UserRequest;
+import com.example.authserver.responses.GetJwtResponse;
+import com.example.authserver.responses.ValidateJwtResponse;
 import com.example.authserver.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -16,10 +18,8 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 class AuthController {
@@ -33,26 +33,26 @@ class AuthController {
     }
 
     @PostMapping("/auth")
-    Map<String, String> getJWT(@RequestBody UserRequest userRequest)
+    GetJwtResponse getJWT(@RequestBody UserRequest userRequest)
     {
         HaircutUser haircutUser = repository.findByEmail(userRequest.getEmail());
         if (haircutUser == null || !userRequest.getPassword().equals(haircutUser.getPassword()))
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
 
         HashMap<String, String> response = new HashMap<>();
-        response.put("jwt", jwtUtil.buildJws(haircutUser.getEmail(), haircutUser.getRole()));
-        response.put("uid", haircutUser.getId().toString());
-        return response;
+
+        return new GetJwtResponse(jwtUtil.buildJws(haircutUser.getEmail(), haircutUser.getRole()),
+                haircutUser.getId().toString());
     }
 
     @PostMapping("/validate")
-    Map<String, String> validateJWT(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth)
+    ValidateJwtResponse validateJWT(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth)
     {
         if (!jwtUtil.validateJwt(auth))
         {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
         }
-        return Collections.singletonMap("jwt", "valid");
+        return new ValidateJwtResponse();
     }
 
     @GetMapping("/users")

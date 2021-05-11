@@ -10,7 +10,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @Configuration
 @ComponentScan
 @EnableWebMvc
-@PropertySource("classpath:application.yml")
+@PropertySource("classpath:application.yaml")
 public class WebAppContext
 {
     @Bean
