@@ -1,0 +1,275 @@
+{
+  "components": {
+    "schemas": {
+      "Appointment": {
+        "type": "object",
+        "properties": {
+          "endDate": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "service": {
+            "type": "string",
+            "enum": [
+              "TRIM",
+              "CUT_AND_BEARD",
+              "SHAVE"
+            ]
+          },
+          "id": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "barber": {
+            "type": "string"
+          },
+          "bookedUserId": {
+            "type": "string"
+          },
+          "startDate": {
+            "format": "date-time",
+            "type": "string"
+          }
+        }
+      },
+      "PatchUserAppointmentRequest": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "description": "Generated server url",
+      "url": "http://localhost:8080"
+    }
+  ],
+  "openapi": "3.0.1",
+  "paths": {
+    "/office/appointments": {
+      "get": {
+        "operationId": "getAppointmentsByRange_1",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Appointment"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "startDate",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "endDate",
+            "required": false
+          }
+        ],
+        "tags": [
+          "office-controller"
+        ]
+      }
+    },
+    "/admin/appointment": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Appointment"
+              }
+            }
+          },
+          "required": true
+        },
+        "operationId": "createAppointment",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Appointment"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "admin-controller"
+        ]
+      }
+    },
+    "/user/appointments": {
+      "get": {
+        "operationId": "getAppointmentsByRange",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Appointment"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "startDate",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "endDate",
+            "required": true
+          }
+        ],
+        "tags": [
+          "user-controller"
+        ]
+      }
+    },
+    "/admin/appointments": {
+      "get": {
+        "operationId": "getAppointmentsByRange_2",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Appointment"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "startDate",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "endDate",
+            "required": false
+          }
+        ],
+        "tags": [
+          "admin-controller"
+        ]
+      }
+    },
+    "/user/appointment/{id}": {
+      "patch": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchUserAppointmentRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "operationId": "updateAppointment",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Appointment"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "format": "int64",
+              "type": "integer"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "tags": [
+          "user-controller"
+        ]
+      }
+    },
+    "/user/appointments/open": {
+      "get": {
+        "operationId": "getAllOpenAppointments",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Appointment"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "user-controller"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "OpenAPI definition",
+    "version": "v0"
+  }
+}
