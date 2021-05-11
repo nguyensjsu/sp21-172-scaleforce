@@ -32,25 +32,31 @@ public class AuthInterceptor implements HandlerInterceptor
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) throws Exception
     {
-        HttpClient client = HttpClient.newHttpClient();
-
-        java.net.http.HttpRequest authReq = HttpRequest.newBuilder(
-                URI.create( AUTH_SERVER_URL + "/validate"))
-                .header("Content-Type", "application/json")
-                .header("Authorization", request.getHeader("Authorization"))
-                .POST(HttpRequest.BodyPublishers.ofString("test"))
-                .build();
-
-        HttpResponse<String> authRes = client.send(authReq, HttpResponse.BodyHandlers.ofString());
-
-        logger.info("JWT validation attempted with response code " + authRes.statusCode());
-        if (authRes.statusCode() != 200)
+        try
         {
-            response.setStatus(403);
-            response.getWriter().write("Invalid credentials");
+            HttpClient client = HttpClient.newHttpClient();
+
+            java.net.http.HttpRequest authReq = HttpRequest.newBuilder(
+                    URI.create(AUTH_SERVER_URL + "/validate"))
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", request.getHeader("Authorization"))
+                    .POST(HttpRequest.BodyPublishers.ofString("test"))
+                    .build();
+
+            HttpResponse<String> authRes = client.send(authReq, HttpResponse.BodyHandlers.ofString());
+
+            logger.info("JWT validation attempted with response code " + authRes.statusCode());
+            if (authRes.statusCode() != 200)
+            {
+                response.setStatus(403);
+                response.getWriter().write("Invalid credentials");
+                return false;
+            }
+            return true;
+        } catch (Exception e)
+        {
+            logger.warn("Error occured: " + e.getMessage() + "\n" + e.getStackTrace());
             return false;
         }
-        return true;
-
     }
 }

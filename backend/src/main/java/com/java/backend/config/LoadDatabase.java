@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Configuration;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.Date;
 
 @Configuration
@@ -38,10 +37,12 @@ class LoadDatabase {
         Date date4 = dateTimeFormat.parse("2021-10-10 15:30:00");
 //        Date date5 = dateTimeFormat.parse("2021-10-10 16:30:00");
 //        Date date6 = dateTimeFormat.parse("2021-10-10 17:30:00");
+        Appointment a = new Appointment(date2, date3, "CoolBarber", HaircutService.CUT_AND_BEARD);
+        a.setBookedUserId("50");
 
         return args -> {
             log.info("Preloading " + repository.save(new Appointment(date, date2, "Barber1", HaircutService.TRIM)));
-            log.info("Preloading " + repository.save(new Appointment(date2, date3, "CoolBarber", HaircutService.CUT_AND_BEARD)));
+            log.info("Preloading " + repository.save(a));
             log.info("Preloading " + repository.save(new Appointment(date3, date4, "AnotherBarber", HaircutService.SHAVE)));
         };
     }

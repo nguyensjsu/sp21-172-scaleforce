@@ -30,7 +30,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 // OpenAPI endpoint
 //                .antMatchers(HttpMethod.GET, "/v3/api-docs").permitAll()
-//                .antMatchers(HttpMethod.GET, "/user").permitAll()
 //                .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

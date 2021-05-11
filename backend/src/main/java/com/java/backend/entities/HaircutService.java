@@ -8,11 +8,11 @@ public enum HaircutService
 
     // cost in dollars
     private final int cost;
-    private final int length;
+//    private final int length;
     HaircutService(int cost, int length)
     {
         this.cost = cost;
-        this.length = length;
+//        this.length = length;
     }
 
     public int getCost()
@@ -20,8 +20,8 @@ public enum HaircutService
         return cost;
     }
 
-    public int getLength()
-    {
-        return length;
-    }
+//    public int getLength()
+//    {
+//        return length;
+//    }
 }

@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -36,5 +35,5 @@ public class Appointment
     @NonNull
     private HaircutService service;
 
-    private String booked;
+    private String bookedUserId;
 }
