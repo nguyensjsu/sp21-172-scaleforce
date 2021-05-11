@@ -49,18 +49,35 @@ with Postman, but Nick was very helpful in that regard.
 
 ### Tasks
 
-TODO "A snapshot (point-in-time) image of the Team's Task Board highlighting
-which "Card" you worked on"
+![patrick tasks week 3](./images/patrick/patrick-tasks-3.png)
 
 ### Accomplishments
 
-TODO "A discussion of your accomplishments that week with a list of links to
-your Code Commits and PRs"
+I primarily worked on [Create cloud deployment
+scripts](https://github.com/nguyensjsu/sp21-172-scaleforce/issues/20) and did a
+quick review of one of Nick's PRs: [OpenAPI changes and updating
+/auth](https://github.com/nguyensjsu/sp21-172-scaleforce/pull/22/files). I had
+initially planned to update the auth server tests but was forced to push this
+work to next week due to time constraints.
 
 ### Challenges
 
-TODO "A discussion of the challenges you faced that week and how you resolved
-those issues"
+Due to prior experimentation via the prototype and Lab 8, setting up the auth
+server so that it is publicly available went relatively smoothly. I had some
+issues related to Google Domains and pointing a custom domain to the IP
+allocated for our ingress powered by Kong. In short, I had to set up a custom
+resource record and was able to get http://auth.scaleforce.dev/api/auth online.
+I'm not 100% sure if its necessary/possible (might be necessary if the frontend
+apps are served via HTTPS) to serve the auth server (and our future API server)
+over HTTPS, and how I can get a certificate (probably Let's Encrypt?) and how I
+can link that certificate to each service's respective ingress.
+
+I had some initial issues experimenting with deploying one of our
+frontend apps to Heroku (errors related to the buildpack) which I was able to
+resolve by creating a git repo within each frontend app directory before
+deploying to Heroku, though I opted not to commit files related to these
+"subrepos" to our repo. This method is relatively clunky and I'm still looking
+for a quicker, more automatic method.
 
 ## Week 4: 5/6 - 5/13
 

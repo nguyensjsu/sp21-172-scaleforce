@@ -56,18 +56,29 @@ I needed to containerize the User class yet extend the UserDetails from Spring S
 
 ### Tasks
 
-TODO "A snapshot (point-in-time) image of the Team's Task Board highlighting
-which "Card" you worked on"
+For this sprint I completed this on this issue, which is a small change to the auth server, as well as testing out the OpenAPI spec generation: [Auth Server changes](https://github.com/nguyensjsu/sp21-172-scaleforce/issues/21)
+
+And am close to but will not quite finish this issue due to my schedule being packed: [Starting API](https://github.com/nguyensjsu/sp21-172-scaleforce/issues/23)
 
 ### Accomplishments
 
-TODO "A discussion of your accomplishments that week with a list of links to
-your Code Commits and PRs"
+Commits:
+https://github.com/nguyensjsu/sp21-172-scaleforce/pull/22/commits
+
+PRs:
+https://github.com/nguyensjsu/sp21-172-scaleforce/pull/22
+
+Un-merged API work is on this branch with a few commits:
+https://github.com/nguyensjsu/sp21-172-scaleforce/tree/start-api
 
 ### Challenges
+I encountered two challenges: Making dates work while leveraging built-in date types, and confirming the design for the API roles.
 
-TODO "A discussion of the challenges you faced that week and how you resolved
-those issues"
+Originally, I used Date objects with a formatter and tried to read in the String value. However, Spring doesn't use the parse function when converting dates, just a cast, so it generated an exception on the conversion to an Appointment object. 
+
+Dates were solved by setting the data type to String for persistance and applying a application.yaml-level pattern so the Spring DateTimeFormat annotation worked as intended. I'll need to convert into Date objects to do more advanced math on them later, but this is a good solution for now and it leaves date time formatting to be globally configurable, just like the JWT TTL and secret key  
+
+For the API role setup, since endpoints should have different behavior based on their role, I'm going to have a controller per role and then the token response will need to be adjusted to return the role so I can confirm authentication without having to have the JWT on the API server. I'll be making this change along with some small updates so that the OpenAPI generation for the auth server provides the correct documentation for all endpoints.
 
 ## Week 4: 5/6 - 5/13
 
