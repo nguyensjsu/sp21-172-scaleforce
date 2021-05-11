@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function TextInput({ label, type, icon, placeholder }) {
+export default function TextInput({ label, type, icon, placeholder, ...rest }) {
   return (
     <div>
       <label className="block text-sm font-medium text-gray-700">{label}</label>
@@ -18,6 +18,7 @@ export default function TextInput({ label, type, icon, placeholder }) {
               : 'focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-12 sm:text-sm border-gray-300 rounded-md'
           }
           placeholder={placeholder}
+          {...rest}
         />
       </div>
     </div>

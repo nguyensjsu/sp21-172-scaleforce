@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 import Dashboard from './screens/Dashboard';
@@ -9,11 +9,19 @@ import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
 import Appointments from './screens/Appointments';
 import Calendar from './screens/Calendar';
+import { getCurrentUser } from './services/auth';
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [isVerifying, setIsVerifying] = useState(false);
-  // TODO handle getting auth status
+
+  useEffect(() => {
+    setIsVerifying(true);
+    const user = getCurrentUser();
+    setIsAuthenticated(!!user);
+    setIsVerifying(false);
+  }, []);
+
   return (
     <Router>
       {isAuthenticated && <Navbar />}
