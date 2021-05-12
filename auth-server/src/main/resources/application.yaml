@@ -9,7 +9,7 @@ spring:
 
 jwt:
   issuer: HaircutAuthServer
-  window: 120
+  window: 3600
   key: dI77U8bhgMefJrG6qQpugl95n8bADM3shHbVO43vX+g=
 
 server:

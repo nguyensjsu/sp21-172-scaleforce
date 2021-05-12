@@ -22,5 +22,5 @@ spec:
           - name: MYSQL_HOST
             valueFrom:
               secretKeyRef:
-                name: db-ip
+                name: auth-db-ip
                 key: db_host

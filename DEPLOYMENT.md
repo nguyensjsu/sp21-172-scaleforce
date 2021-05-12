@@ -268,6 +268,80 @@ kubectl apply -f auth-server-strip-path.yml
 kubectl patch ingress auth-server -p  '{"metadata":{"annotations":{"konghq.com/override":"kong-strip-path"}}}'
 ```
 
+##### Google Domains
+
+To provide an alternative to using the IP of our ingress directly, we can use
+our own domain. After obtaining `scaleforce.dev`, we create a Type A resource
+record with the subdomain `auth`, leaving the TTL to the default of 1 hour and
+setting the data to the IP address of our ingress. The end result is a publicly
+accessible `http://auth.scaleforce.dev/`.
+
+##### HTTPS
+
+We install
+[cert-manager](https://cert-manager.io/docs/installation/kubernetes/#installing-with-regular-manifests):
+
+```bash
+kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.3.1/cert-manager.yaml
+```
+
+Then, we get our [TLS
+certificate](https://docs.konghq.com/kubernetes-ingress-controller/1.1.x/guides/cert-manager/#request-tls-certificate-from-lets-encrypt).
+
+When setting up the ClusterIssuer, we use the following command:
+
+```bash
+echo "apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+  namespace: cert-manager
+spec:
+  acme:
+    email: patrickjohnsilvestre@gmail.com
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    server: https://acme-v02.api.letsencrypt.org/directory
+    solvers:
+    - http01:
+        ingress:
+          class: kong" | kubectl apply -f -
+clusterissuer.cert-manager.io/letsencrypt-prod configured
+```
+
+(Note the difference versus the Kong Docs for `apiVersion`)
+
+We provision our certificate and use it:
+
+```bash
+echo '
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: auth-scaleforce-dev
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: kong
+spec:
+  tls:
+  - secretName: auth-scaleforce-dev
+    hosts:
+    - auth.scaleforce.dev
+  rules:
+  - host: auth.scaleforce.dev
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: auth-server-clusterip
+          servicePort: 80
+' | kubectl apply -f -
+ingress.extensions/auth-scaleforce-dev configured
+```
+
+(Note: issuing takes between 30 minutes to an hour)
+
 ### `back-office`, `cashier`, `online-store`
 
 We can deploy `back-office` and our other React-based frontend apps on Heroku
