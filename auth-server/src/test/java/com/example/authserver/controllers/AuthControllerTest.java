@@ -1,5 +1,6 @@
 package com.example.authserver.controllers;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -251,5 +252,74 @@ public class AuthControllerTest {
             post("/validate")
                 .header("Authorization", "Bearer: " + token))
         .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  void allUsers_RoleAdmin() throws Exception {
+    UserRequest userRequest = new UserRequest();
+    userRequest.setEmail("Nick");
+    userRequest.setPassword("N");
+
+    MvcResult mvcResult = mockMvc
+        .perform(
+            post("/auth")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userRequest)))
+        .andReturn();
+
+    JsonNode jsonNode = objectMapper.readTree(mvcResult.getResponse().getContentAsString());
+    String token = jsonNode.get("jwt").asText();
+
+    mockMvc
+        .perform(
+            get("/users")
+                .header("Authorization", "Bearer: " + token))
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  void allUsers_RoleOffice() throws Exception {
+    UserRequest userRequest = new UserRequest();
+    userRequest.setEmail("G");
+    userRequest.setPassword("G");
+
+    MvcResult mvcResult = mockMvc
+        .perform(
+            post("/auth")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userRequest)))
+        .andReturn();
+
+    JsonNode jsonNode = objectMapper.readTree(mvcResult.getResponse().getContentAsString());
+    String token = jsonNode.get("jwt").asText();
+
+    mockMvc
+        .perform(
+            get("/users")
+                .header("Authorization", "Bearer: " + token))
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  void allUsers_RoleUser() throws Exception {
+    UserRequest userRequest = new UserRequest();
+    userRequest.setEmail("Jake");
+    userRequest.setPassword("J");
+
+    MvcResult mvcResult = mockMvc
+        .perform(
+            post("/auth")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userRequest)))
+        .andReturn();
+
+    JsonNode jsonNode = objectMapper.readTree(mvcResult.getResponse().getContentAsString());
+    String token = jsonNode.get("jwt").asText();
+
+    mockMvc
+        .perform(
+            get("/users")
+                .header("Authorization", "Bearer: " + token))
+        .andExpect(status().isForbidden());
   }
 }
