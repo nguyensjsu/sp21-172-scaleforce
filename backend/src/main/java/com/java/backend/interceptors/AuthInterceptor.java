@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -15,6 +14,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Arrays;
 
 @Component
 public class AuthInterceptor implements HandlerInterceptor
@@ -47,16 +47,13 @@ public class AuthInterceptor implements HandlerInterceptor
 
             logger.info("JWT validation attempted with response code " + authRes.statusCode());
             if (authRes.statusCode() != 200)
-            {
-                response.setStatus(403);
-                response.getWriter().write("Invalid credentials");
-                return false;
-            }
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
+
             return true;
         } catch (Exception e)
         {
-            logger.warn("Error occured: " + e.getMessage() + "\n" + e.getStackTrace());
-            return false;
+            logger.warn("Error occurred: " + e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
         }
     }
 }

@@ -5,7 +5,9 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.util.Date;
 
 
@@ -21,12 +23,10 @@ public class Appointment
 
     @NonNull
 //    @Column(unique=true)
-    @Temporal(TemporalType.TIMESTAMP)
     private Date startDate;
 
     @NonNull
 //    @Column(unique=true)
-    @Temporal(TemporalType.TIMESTAMP)
     private Date endDate;
 
     @NonNull

@@ -1,5 +1,6 @@
 package com.java.backend.config;
 
+import com.java.backend.filters.AuthFilter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -8,14 +9,17 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
+
 @Configuration
 @EnableGlobalMethodSecurity(securedEnabled = true)
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter
 {
-    public SecurityConfig()
-    {
+    private final AuthFilter authFilter;
 
+    public SecurityConfig(AuthFilter authFilter)
+    {
+        this.authFilter = authFilter;
     }
 
     @Override
@@ -33,5 +37,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 //                .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+//        httpSecurity.addFilterBefore(new AuthFilter(), AuthFilter.class);
+//        http.addFilterBefore(new JwtFilter(),UsernamePasswordAuthenticationFilter.class).authorizeRequests();
+//        http.addFilterBefore(jwtRequestFilter,UsernamePasswordAuthenticationFilter.class).authorizeRequests();
+
     }
 }

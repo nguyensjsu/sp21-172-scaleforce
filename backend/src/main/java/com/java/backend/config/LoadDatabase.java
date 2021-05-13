@@ -30,11 +30,10 @@ class LoadDatabase {
     @Bean
     CommandLineRunner initDatabase(AppointmentRepository repository) throws ParseException
     {
-
-        Date date = dateTimeFormat.parse("2021-10-10 12:30:00");
-        Date date2 = dateTimeFormat.parse("2021-10-10 13:30:00");
-        Date date3 = dateTimeFormat.parse("2021-10-10 14:30:00");
-        Date date4 = dateTimeFormat.parse("2021-10-10 15:30:00");
+        Date date = dateTimeFormat.parse("2021-10-10 12:30:00 +0000");
+        Date date2 = dateTimeFormat.parse("2021-10-10 13:30:00 +0000");
+        Date date3 = dateTimeFormat.parse("2021-10-10 14:30:00 +0000");
+        Date date4 = dateTimeFormat.parse("2021-10-10 15:30:00 +0000");
 //        Date date5 = dateTimeFormat.parse("2021-10-10 16:30:00");
 //        Date date6 = dateTimeFormat.parse("2021-10-10 17:30:00");
         Appointment a = new Appointment(date2, date3, "CoolBarber", HaircutService.CUT_AND_BEARD);

@@ -30,15 +30,16 @@ public class UserController
     }
 
     @GetMapping("/appointments/open")
-    public List<Appointment> getAllOpenAppointments()
+    public List<Appointment> getOpenAppointments(@RequestParam(value = "startDate", required = false) String startDate,
+                                                 @RequestParam(value = "endDate", required = false) String endDate)
     {
-        return appointmentRepository.findAppointmentsByBookedUserIdIsNull();
-    }
+        if ((startDate == null && endDate != null) ||
+                (startDate != null && endDate == null))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Must use both start and end date when filtering");
 
-    @GetMapping("/appointments")
-    public List<Appointment> getAppointmentsByRange(@RequestParam(value = "startDate") String startDate,
-                                                    @RequestParam(value = "endDate") String endDate)
-    {
+        // if no filters, return all unbooked records
+        if (startDate == null && endDate == null)
+            return appointmentRepository.findAppointmentsByBookedUserIdIsNull();
         try
         {
             return appointmentRepository
@@ -49,7 +50,12 @@ public class UserController
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     String.format("Date format is invalid, correct pattern is %s", dateTimeFormat.toPattern()));
         }
+    }
 
+    @GetMapping("/appointments/{id}")
+    public List<Appointment> getOpenAppointmentsById(@PathVariable String id)
+    {
+        return appointmentRepository.findAppointmentsByBookedUserId(id);
     }
 
     @PatchMapping("/appointment/{id}")
