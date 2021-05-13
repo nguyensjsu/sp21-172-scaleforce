@@ -274,7 +274,19 @@ public class AuthControllerTest {
         .perform(
             get("/users")
                 .header("Authorization", "Bearer: " + token))
-        .andExpect(status().isOk());
+        .andExpect(status().isOk())
+        .andExpect(jsonPath(("$[0].id")).value(1))
+        .andExpect(jsonPath(("$[0].email")).value("Nick"))
+        .andExpect(jsonPath(("$[0].password")).value("N"))
+        .andExpect(jsonPath(("$[0].role")).value("ROLE_ADMIN"))
+        .andExpect(jsonPath(("$[1].id")).value(2))
+        .andExpect(jsonPath(("$[1].email")).value("G"))
+        .andExpect(jsonPath(("$[1].password")).value("G"))
+        .andExpect(jsonPath(("$[1].role")).value("ROLE_OFFICE"))
+        .andExpect(jsonPath(("$[2].id")).value(3))
+        .andExpect(jsonPath(("$[2].email")).value("Jake"))
+        .andExpect(jsonPath(("$[2].password")).value("J"))
+        .andExpect(jsonPath(("$[2].role")).value("ROLE_USER"));
   }
 
   @Test
@@ -297,7 +309,19 @@ public class AuthControllerTest {
         .perform(
             get("/users")
                 .header("Authorization", "Bearer: " + token))
-        .andExpect(status().isOk());
+        .andExpect(status().isOk())
+        .andExpect(jsonPath(("$[0].id")).value(1))
+        .andExpect(jsonPath(("$[0].email")).value("Nick"))
+        .andExpect(jsonPath(("$[0].password")).value("N"))
+        .andExpect(jsonPath(("$[0].role")).value("ROLE_ADMIN"))
+        .andExpect(jsonPath(("$[1].id")).value(2))
+        .andExpect(jsonPath(("$[1].email")).value("G"))
+        .andExpect(jsonPath(("$[1].password")).value("G"))
+        .andExpect(jsonPath(("$[1].role")).value("ROLE_OFFICE"))
+        .andExpect(jsonPath(("$[2].id")).value(3))
+        .andExpect(jsonPath(("$[2].email")).value("Jake"))
+        .andExpect(jsonPath(("$[2].password")).value("J"))
+        .andExpect(jsonPath(("$[2].role")).value("ROLE_USER"));
   }
 
   @Test
