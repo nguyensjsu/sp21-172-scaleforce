@@ -346,4 +346,81 @@ public class AuthControllerTest {
                 .header("Authorization", "Bearer: " + token))
         .andExpect(status().isForbidden());
   }
+
+  @Test
+  void getUserById_RoleAdmin() throws Exception {
+    UserRequest userRequest = new UserRequest();
+    userRequest.setEmail("Nick");
+    userRequest.setPassword("N");
+
+    MvcResult mvcResult = mockMvc
+        .perform(
+            post("/auth")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userRequest)))
+        .andReturn();
+
+    JsonNode jsonNode = objectMapper.readTree(mvcResult.getResponse().getContentAsString());
+    String token = jsonNode.get("jwt").asText();
+
+    mockMvc
+        .perform(
+            get("/user/1")
+                .header("Authorization", "Bearer: " + token))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath(("$.id")).value(1))
+        .andExpect(jsonPath(("$.email")).value("Nick"))
+        .andExpect(jsonPath(("$.password")).value("N"))
+        .andExpect(jsonPath(("$.role")).value("ROLE_ADMIN"));
+  }
+
+  @Test
+  void getUserById_RoleOffice() throws Exception {
+    UserRequest userRequest = new UserRequest();
+    userRequest.setEmail("G");
+    userRequest.setPassword("G");
+
+    MvcResult mvcResult = mockMvc
+        .perform(
+            post("/auth")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userRequest)))
+        .andReturn();
+
+    JsonNode jsonNode = objectMapper.readTree(mvcResult.getResponse().getContentAsString());
+    String token = jsonNode.get("jwt").asText();
+
+    mockMvc
+        .perform(
+            get("/user/1")
+                .header("Authorization", "Bearer: " + token))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath(("$.id")).value(1))
+        .andExpect(jsonPath(("$.email")).value("Nick"))
+        .andExpect(jsonPath(("$.password")).value("N"))
+        .andExpect(jsonPath(("$.role")).value("ROLE_ADMIN"));
+  }
+
+  @Test
+  void getUserById_RoleUser() throws Exception {
+    UserRequest userRequest = new UserRequest();
+    userRequest.setEmail("Jake");
+    userRequest.setPassword("J");
+
+    MvcResult mvcResult = mockMvc
+        .perform(
+            post("/auth")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userRequest)))
+        .andReturn();
+
+    JsonNode jsonNode = objectMapper.readTree(mvcResult.getResponse().getContentAsString());
+    String token = jsonNode.get("jwt").asText();
+
+    mockMvc
+        .perform(
+            get("/user/1")
+                .header("Authorization", "Bearer: " + token))
+        .andExpect(status().isForbidden());
+  }
 }
