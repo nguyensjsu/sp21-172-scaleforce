@@ -4,7 +4,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.example.authserver.requests.AuthRequest;
+import com.example.authserver.requests.UserRequest;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Disabled;
@@ -28,15 +28,15 @@ public class AuthControllerTest {
 
   @Test
   void getJWT() throws Exception {
-    AuthRequest authRequest = new AuthRequest();
-    authRequest.setUsername("Nick");
-    authRequest.setPassword("N");
+    UserRequest userRequest = new UserRequest();
+    userRequest.setEmail("Nick");
+    userRequest.setPassword("N");
 
     mockMvc
         .perform(
             post("/auth")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(authRequest)))
+                .content(objectMapper.writeValueAsString(userRequest)))
         .andExpect(status().isOk())
         .andExpect(jsonPath(("$")).exists())
         .andExpect(jsonPath(("$.jwt")).exists());
@@ -52,42 +52,42 @@ public class AuthControllerTest {
 
   @Test
   void getJWT_invalidUsername() throws Exception {
-    AuthRequest authRequest = new AuthRequest();
-    authRequest.setUsername("Bob");
-    authRequest.setPassword("B");
+    UserRequest userRequest = new UserRequest();
+    userRequest.setEmail("Bob");
+    userRequest.setPassword("B");
 
     mockMvc.perform(
         post("/auth")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(authRequest)))
+            .content(objectMapper.writeValueAsString(userRequest)))
         .andExpect(status().isUnauthorized());
   }
 
   @Test
   void getJWT_invalidPassword() throws Exception {
-    AuthRequest authRequest = new AuthRequest();
-    authRequest.setUsername("Nick");
-    authRequest.setPassword("A");
+    UserRequest userRequest = new UserRequest();
+    userRequest.setEmail("Nick");
+    userRequest.setPassword("A");
 
     mockMvc.perform(
         post("/auth")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(authRequest)))
+            .content(objectMapper.writeValueAsString(userRequest)))
         .andExpect(status().isUnauthorized());
   }
 
   @Test
   void validateJWT() throws Exception {
 
-    AuthRequest authRequest = new AuthRequest();
-    authRequest.setUsername("Nick");
-    authRequest.setPassword("N");
+    UserRequest userRequest = new UserRequest();
+    userRequest.setEmail("Nick");
+    userRequest.setPassword("N");
 
     MvcResult mvcResult = mockMvc
         .perform(
             post("/auth")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(authRequest)))
+                .content(objectMapper.writeValueAsString(userRequest)))
         .andReturn();
 
     JsonNode jsonNode = objectMapper.readTree(mvcResult.getResponse().getContentAsString());
