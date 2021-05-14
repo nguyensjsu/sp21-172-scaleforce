@@ -1,4 +1,4 @@
-const API_URL = 'http://auth.scaleforce.dev/';
+const API_URL = 'https://auth.scaleforce.dev/';
 
 export const register = (username, email, password) => {
   return fetch(API_URL + 'auth', {
@@ -17,13 +17,14 @@ export const register = (username, email, password) => {
 export const login = (username, password) => {
   return fetch(API_URL + 'auth', {
     method: 'POST',
+    mode: 'cors',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: {
-      username,
+    body: JSON.stringify({
+      email: username,
       password,
-    },
+    }),
   }).then((response) => {
     if (response.data.accessToken) {
       localStorage.setItem('user', JSON.stringify(response.data));

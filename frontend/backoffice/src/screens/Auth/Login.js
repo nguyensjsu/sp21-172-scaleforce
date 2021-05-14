@@ -21,7 +21,7 @@ export default function Login() {
         <form onSubmit={handleSubmit(onSubmit)}>
           <TextInput
             label="Email"
-            type="email"
+            // type="email"
             placeholder="email@thebarbershop.com"
             {...register('email', { required: true })}
           />

@@ -49,9 +49,8 @@ export default function Navbar() {
                 <div className="hidden sm:block sm:ml-6">
                   <div className="flex space-x-4">
                     {navigation.map((item) => (
-                      <Link to={item.href}>
-                        <a
-                          key={item.name}
+                      <Link key={item.name} to={item.href}>
+                        <div
                           href={item.href}
                           className={classNames(
                             location.pathname === item.href
@@ -64,7 +63,7 @@ export default function Navbar() {
                           }
                         >
                           {item.name}
-                        </a>
+                        </div>
                       </Link>
                     ))}
                   </div>
@@ -159,9 +158,8 @@ export default function Navbar() {
           <Disclosure.Panel className="sm:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1">
               {navigation.map((item) => (
-                <Link to={item.href}>
-                  <a
-                    key={item.name}
+                <Link key={item.name} to={item.href}>
+                  <div
                     href={item.href}
                     className={classNames(
                       location.pathname === item.href
@@ -180,7 +178,7 @@ export default function Navbar() {
                     }
                   >
                     {item.name}
-                  </a>
+                  </div>
                 </Link>
               ))}
             </div>
