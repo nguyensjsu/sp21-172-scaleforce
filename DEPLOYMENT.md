@@ -26,6 +26,14 @@
 
 `auth-server` should now be running on `http://localhost:8080`
 
+### `backend`
+
+To run `backend`, `auth-server` must be running in a container. (See Local
+Deployment (containerized, non-`docker-compose`)).
+
+Once `auth-server` is running in a container, use `gradle` to run `backend` as
+usual.
+
 ### `backoffice`
 
 #### Install `backoffice` dependencies
@@ -113,12 +121,35 @@ network.
     ```zsh
     docker run --name auth-server -td \
     --network scaleforce \
-    -p 8080:8080 \
+    -p 8099:8080 \
     -e "MYSQL_HOST=mysql" \
     scaleforce172/auth-server
     ```
 
-`auth-server` should now be running on `http://localhost:8080`
+`auth-server` should now be running on `http://localhost:8099`
+
+### `backend`
+
+#### Build `backend` image
+
+(Make sure `backend` has already been built via `gradle build`)
+
+```zsh
+cd backend
+docker build -t scaleforce172/backend .
+```
+
+#### Create `backend` container
+
+- Run `backend`
+
+    ```zsh
+    docker run --name backend -td \
+    --network scaleforce \
+    -p 8080:8080 \
+    -e "MYSQL_HOST=mysql" \
+    scaleforce172/backend
+    ```
 
 ### `backoffice`
 
@@ -318,29 +349,34 @@ echo '
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: auth-scaleforce-dev
+  name: backend-scaleforce-dev
   annotations:
     kubernetes.io/tls-acme: "true"
     cert-manager.io/cluster-issuer: letsencrypt-prod
     kubernetes.io/ingress.class: kong
 spec:
   tls:
-  - secretName: auth-scaleforce-dev
+  - secretName: backend-scaleforce-dev
     hosts:
-    - auth.scaleforce.dev
+    - api.scaleforce.dev
   rules:
-  - host: auth.scaleforce.dev
+  - host: api.scaleforce.dev
     http:
       paths:
       - path: /
         backend:
-          serviceName: auth-server-clusterip
+          serviceName: backend-clusterip
           servicePort: 80
 ' | kubectl apply -f -
-ingress.extensions/auth-scaleforce-dev configured
+ingress.extensions/backend-scaleforce-dev configured
 ```
 
 (Note: issuing takes between 30 minutes to an hour)
+
+### `backend`
+
+Pretty much the same as `auth-server`, though in relevant scripts, substitute
+`auth-server` for `backend`.
 
 ### `back-office`, `cashier`, `online-store`
 
