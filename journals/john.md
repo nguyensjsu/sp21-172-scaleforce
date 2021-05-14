@@ -57,13 +57,13 @@ I didn't face any challenges this week besides a very busy schedule :P
 
 ### Tasks
 
-TODO "A snapshot (point-in-time) image of the Team's Task Board highlighting
-which "Card" you worked on"
+![john week 4](./images/john/jg-2.png)
+
+- [x] i worked on syncing the backend auth server with react.
+- [x] deployed the backend office app on Netlify
+- [x] created frontend services
 
 ### Accomplishments
-
-TODO "A discussion of your accomplishments that week with a list of links to
-your Code Commits and PRs"
 
 ### Challenges
 
