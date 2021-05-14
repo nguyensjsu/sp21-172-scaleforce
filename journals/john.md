@@ -65,7 +65,9 @@ I didn't face any challenges this week besides a very busy schedule :P
 
 ### Accomplishments
 
+[work for auth](https://github.com/nguyensjsu/sp21-172-scaleforce/tree/add-auth-to-frontend)
+[link to netlify](https://vigilant-wiles-bee8f3.netlify.app/)
+
 ### Challenges
 
-TODO "A discussion of the challenges you faced that week and how you resolved
-those issues"
+the auth server was frustrating to work with because of a cors issue. this happens when you don't have a proxy or are querying from a non trusted source. we are going to fix that by ignoring cors to avoid setting up the proxy for now
