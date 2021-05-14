@@ -68,7 +68,7 @@ First time use of axios has delayed my progress to get a working connection. Wil
 
 ### Tasks
 
-![jesus_task_week_4](./images/jesus/jesus_task_4.png)
+![jesus_task_week_4](./images/jesus/jesus_task_week_4.png)
 
 ### Accomplishments
 
