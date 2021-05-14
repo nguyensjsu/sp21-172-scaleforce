@@ -86,7 +86,7 @@ For the API role setup, since endpoints should have different behavior based on 
 
 For this week, I finished two tasks: the API task from last time (plus some bugfixes),  [API server](https://github.com/nguyensjsu/sp21-172-scaleforce/issues/23)
 
-and adjusting the OpenAPI spec generation: [Fix OpenAPI generation for auth server](https://github.com/nguyensjsu/sp21-172-scaleforce/issues/23)
+and adjusting the OpenAPI spec generation: [Fix OpenAPI generation for auth server](https://github.com/nguyensjsu/sp21-172-scaleforce/issues/34)
 
 I ran into some more trouble with the date time stuff, so I didn't make as much progress as I hoped.
 
