@@ -84,15 +84,28 @@ For the API role setup, since endpoints should have different behavior based on 
 
 ### Tasks
 
-TODO "A snapshot (point-in-time) image of the Team's Task Board highlighting
-which "Card" you worked on"
+For this week, I finished two tasks: the API task from last time (plus some bugfixes),  [API server](https://github.com/nguyensjsu/sp21-172-scaleforce/issues/23)
+
+and adjusting the OpenAPI spec generation: [Fix OpenAPI generation for auth server](https://github.com/nguyensjsu/sp21-172-scaleforce/issues/23)
+
+I ran into some more trouble with the date time stuff, so I didn't make as much progress as I hoped.
 
 ### Accomplishments
 
-TODO "A discussion of your accomplishments that week with a list of links to
-your Code Commits and PRs"
+Commits:
+https://github.com/nguyensjsu/sp21-172-scaleforce/pull/35/commits
+
+https://github.com/nguyensjsu/sp21-172-scaleforce/pull/36/commits
+
+PRs:
+
+https://github.com/nguyensjsu/sp21-172-scaleforce/pull/35
+https://github.com/nguyensjsu/sp21-172-scaleforce/pull/36
+
 
 ### Challenges
+Most of my frustration this sprint was revolving around some small date-time errors and inconsistencies regarding them. At first, I left in a @Temporal annotation with a Timestamp type. Therefore, Jackson parser is parsing the date as a "TemporalType.Timestamp". The conversion in the POST calls and query parameters is input as a conversion from String to Date using the DateTimeFormatter I defined in the config. The conversion when pulling from the DB is from MySQL to Date using TemporalType.Timestamp, and I didn't give it the pre-defined pattern, and on top of that, its not a matching type, so an input without a timestamp was kind of converted to UTC. 
 
-TODO "A discussion of the challenges you faced that week and how you resolved
-those issues"
+What this caused was that an input would look be passed in looking like 6:30, and come back as 13:30, which we later realzed was a convertion to 0 offset using timezones. We needed the API to return the same value that was passed in.
+
+I could set the value without an external configuration, but that defeats the point of leaving the other dateTime foramt as externally configurable. After adding a timezone to the date time pattern and removing the annotation, the conversion is correct, however, we noticed that the database layer is still saving the dates as timestamp-y looking dates, but correctly converts to UTC for responses. Since there are a few more features that need to be added and the behavior on the surface is working as intended of returning an expected response, this small discrepency is left in for now and we will be continuing on. Now as long as you pass in the format, even if there's a timezone, it converts the timezone to 0 offset and returns it, so the behavior is clear why the numbers for the hour is changing.
