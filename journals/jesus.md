@@ -68,6 +68,27 @@ First time use of axios has delayed my progress to get a working connection. Wil
 
 ### Tasks
 
+![jesus_task_week_4](./images/jesus/jesus_task_4.png)
+
+### Accomplishments
+
+Added Protected Routing for Cashier and Online-Store
+[cashier and online-store routing](https://github.com/nguyensjsu/sp21-172-scaleforce/projects/1#card-61088152)
+
+- Installed 'react-table'
+- Added Protected Routing
+  - Cashier
+  - Online Store
+
+### Challenges
+
+Connecting to the API was more difficult expected, therefore asked John for review. John discovered connection issues occurred due to a CORS error. 
+[CORS Error](https://github.com/nguyensjsu/sp21-172-scaleforce/issues/38)
+
+## Week 5: 5/13 - 5/17
+
+### Tasks
+
 TODO "A snapshot (point-in-time) image of the Team's Task Board highlighting
 which "Card" you worked on"
 
@@ -77,6 +98,5 @@ TODO "A discussion of your accomplishments that week with a list of links to
 your Code Commits and PRs"
 
 ### Challenges
-
 TODO "A discussion of the challenges you faced that week and how you resolved
 those issues"
