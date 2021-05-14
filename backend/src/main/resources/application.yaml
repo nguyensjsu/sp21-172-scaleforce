@@ -22,4 +22,4 @@ springdoc:
     enabled: false
 
 auth:
-  url: http://localhost:8099
+  url: https://auth.scaleforce.dev
