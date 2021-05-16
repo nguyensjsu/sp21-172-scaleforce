@@ -22,4 +22,4 @@ springdoc:
     enabled: false
 
 auth:
-  url: http://localhost:8099
+  url: http://172.17.0.1:8099
