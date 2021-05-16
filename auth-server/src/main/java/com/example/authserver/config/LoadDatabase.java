@@ -18,9 +18,9 @@ class LoadDatabase {
     CommandLineRunner initDatabase(UserRepository repository) {
 
         return args -> {
-            log.info("Preloading " + repository.save(new HaircutUser("Nick", "N", Role.ROLE_ADMIN)));
-            log.info("Preloading " + repository.save(new HaircutUser("G", "G", Role.ROLE_OFFICE)));
-            log.info("Preloading " + repository.save(new HaircutUser("Jake", "J", Role.ROLE_USER)));
+            log.info("Preloading " + repository.save(new HaircutUser("Nick@email.test", "N", Role.ROLE_ADMIN)));
+            log.info("Preloading " + repository.save(new HaircutUser("G@email.test", "G", Role.ROLE_OFFICE)));
+            log.info("Preloading " + repository.save(new HaircutUser("Jake@email.test", "J", Role.ROLE_USER)));
         };
     }
 }
