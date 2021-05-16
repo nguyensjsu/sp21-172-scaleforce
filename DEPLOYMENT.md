@@ -2,192 +2,148 @@
 
 ## Local Deployment (minimum container usage)
 
-### `auth-server`
+### Back End
 
-#### Build, run `auth-server`
+#### `auth-server`
 
-- Create a MySQL container
+- Create a MySQL container:
 
-    ```zsh
-    docker run --name mysql -td \
-    -p 3306:3306 \
-    -e MYSQL_ROOT_PASSWORD=cmpe172 \
-    mysql:8.0
-    ```
+  ```zsh
+  docker run --rm --name mysql -td \
+  -p 3306:3306 \
+  -e MYSQL_ROOT_PASSWORD=cmpe172 \
+  mysql:8.0
+  ```
 
 - Initialize MySQL using `auth-server/scripts/schema.sql`
-  - Easiest way is via MySQL Workbench
-- Run `auth-server`
+- Build, run `auth-server`:
 
-    ```zsh
-    cd auth-server
-    gradle bootRun
-    ```
+  ```zsh
+  cd auth-server
+  gradle build -x test
+  gradle bootRun
+  ```
 
-`auth-server` should now be running on `http://localhost:8080`
+- `auth-server` should now be running on `http://localhost:8099`
 
-### `backoffice`
+#### `backend`
 
-#### Install `backoffice` dependencies
+- (run `auth-server`)
+
+- Build, run `backend`:
+
+  ```zsh
+  cd backend
+  gradle build -x test
+  gradle bootRun
+  ```
+
+- `backend` should now be running on `http://localhost:8080`
+
+### Front End
+
+### `backoffice`, `cashier`, and `online-store`
+
+#### Install `{APP_NAME}` dependencies
 
 ```zsh
-cd frontend/cashier
-npm install
-```
-
-#### Run `backoffice`
-
-```zsh
-cd frontend/backoffice
-npm start
-```
-
-### `cashier`
-
-#### Install `cashier` dependencies
-
-```zsh
-cd frontend/cashier
+cd frontend/{APP_NAME}
 yarn install
 ```
 
-#### Run `cashier`
+#### Run `{APP_NAME}`
 
 ```zsh
-cd frontend/cashier
+cd frontend/{APP_NAME}
 yarn start
 ```
 
-### `online-store`
+## Local Deployment (containers)
 
-#### Install `online-store` dependencies
+### Back End
 
-```zsh
-cd frontend/online-store
-npm install
-```
+- Create a dedicated network for all containers:
 
-#### Run `online-store`
+  ```zsh
+  docker network create --driver bridge scaleforce
+  ```
 
-```zsh
-cd frontend/online-store
-npm start
-```
+- Create a MySQL container, connecting it to the `scaleforce` network:
 
-## Local Deployment (containerized, non-`docker-compose`)
-
-### `auth-server`
-
-#### Build `auth-server` image
-
-(Make sure `auth-server` has already been built via `gradle build`)
-
-```zsh
-cd auth-server
-docker build -t scaleforce172/auth-server .
-```
-
-#### Create `auth-server` container
-
-- Create a dedicated network for our `auth-server` and `mysql` containers
-
-    ```zsh
-    docker network create --driver bridge scaleforce
-    ```
-
-- Create a MySQL container, connecting it to the `scaleforce`
-network.
-
-    ```zsh
-    docker run --name mysql -td \
-    --network scaleforce \
-    -p 3306:3306 \
-    -e MYSQL_ROOT_PASSWORD=cmpe172 \
-    mysql:8.0
-    ```
+  ```zsh
+  docker run --rm --name mysql -td \
+  --network scaleforce \
+  -p 3306:3306 \
+  -e MYSQL_ROOT_PASSWORD=cmpe172 \
+  mysql:8.0
+  ```
 
 - Initialize MySQL using `auth-server/scripts/schema.sql`
-  - Easiest way is via MySQL Workbench
-- Run `auth-server`
 
-    ```zsh
-    docker run --name auth-server -td \
-    --network scaleforce \
-    -p 8080:8080 \
-    -e "MYSQL_HOST=mysql" \
-    scaleforce172/auth-server
-    ```
+#### `auth-server`
 
-`auth-server` should now be running on `http://localhost:8080`
+- Build `auth-server`:
 
-### `backoffice`
+  ```zsh
+  cd auth-server
+  gradle build -x test
+  ```
 
-#### Build `backoffice` image
+- Build docker image:
 
-```zsh
-cd frontend/backoffice
-docker build -t scaleforce172/backoffice .
-```
+  ```zsh
+  docker build -t scaleforce172/auth-server .
+  ```
 
-#### Create `backoffice` container
+- Run `auth-server`:
 
-```zsh
-docker run --name backoffice -itd \
---network="host" \
--v ${PWD}:/app \
--v /app/node_modules \
-scaleforce172/backoffice
-```
+  ```zsh
+  docker run --rm --name auth-server -td \
+  --network scaleforce \
+  -p 8099:8099 \
+  -e "MYSQL_HOST=mysql" \
+  scaleforce172/auth-server
+  ```
 
-`backoffice` should now be running on `http://localhost:3000`
+- `auth-server` should now be running on `http://localhost:8099`
 
-### `cashier`
+### `backend`
 
-#### Build `cashier` image
+#### Build `backend` image
 
-```zsh
-cd frontend/cashier
-docker build -t scaleforce172/cashier .
-```
+- Build `back-end`:
 
-#### Create `cashier` container
+  ```zsh
+  cd backend
+  gradle build -x test
+  ```
 
-```zsh
-docker run --name cashier -itd \
---network="host" \
--v ${PWD}:/app \
--v /app/node_modules \
-scaleforce172/cashier
-```
+- Build docker image:
 
-`cashier` should now be running on `http://localhost:3000`
+  ```zsh
+  cd backend
+  docker build -t scaleforce172/backend .
+  ```
 
-### `online-store`
+- Run `backend`
 
-#### Build `online-store` image
+  ```zsh
+  docker run --rm --name backend -td \
+  --network scaleforce \
+  -p 8080:8080 \
+  -e "MYSQL_HOST=mysql" \
+  scaleforce172/backend
+  ```
 
-```zsh
-cd frontend/online-store
-docker build -t scaleforce172/online-store .
-```
-
-#### Create `online-store` container
-
-```zsh
-docker run --name online-store -itd \
---network="host" \
--v ${PWD}:/app \
--v /app/node_modules \
-scaleforce172/online-store
-```
-
-`online-store` should now be running on `http://localhost:3000`
+- `backend` should now be running on `http://localhost:8080`
 
 ## Cloud Deployment
 
-### `auth-server`
+### Back End
 
-#### Cloud SQL
+#### `auth-server`
+
+##### Cloud SQL
 
 To store data for `auth-server`, we use an instance of MySQL provided by Cloud
 SQL. When creating the instance, we reuse the password used for our local
@@ -200,12 +156,12 @@ disable backups.
 
 Once our instance is provisioned, we whitelist our personal IPs in order to
 access the instance through Workbench. Alternatively, administration can be
-performed via Cloud Shell. Finally, we initialize the instance based on
-`auth-server/scripts/schema.sql`.
+performed via Cloud Shell. **Finally, we initialize the instance based on
+`auth-server/scripts/schema.sql`.**
 
-#### Google Kubernetes Engine
+##### Google Kubernetes Engine
 
-To prepare first push the latest version of `auth-server` to Docker Hub:
+We first push the latest version of `auth-server` to Docker Hub:
 
 ```zsh
 docker push scaleforce172/auth-server
@@ -220,9 +176,9 @@ Engine](https://cloud.google.com/sql/docs/mysql/connect-kubernetes-engine#privat
 For simplicity, we connect without using the Cloud SQL Auth proxy, though for
 production, the proxy is recommended due to better security features.
 
-We create a `auth-server-deployment.yml` to describe out `auth-server`
+We create a `auth-server-deployment.yml` to describe our `auth-server`
 Deployment and a `auth-server-service.yml` to describe our ClusterIP Service
-used to create a stable internal IP address that clients can send request to to
+used to create a stable internal IP address that clients can send requests to to
 hit the Deployment. We spin up our Deployment and ClusterIP:
 
 ```bash
@@ -337,14 +293,16 @@ spec:
           serviceName: auth-server-clusterip
           servicePort: 80
 ' | kubectl apply -f -
-ingress.extensions/auth-scaleforce-dev configured
+ingress.extensions/backend-scaleforce-dev configured
 ```
 
 (Note: issuing takes between 30 minutes to an hour)
 
-### `back-office`, `cashier`, `online-store`
+#### `backend`
 
-We can deploy `back-office` and our other React-based frontend apps on Heroku
-based on the instructions in [Heroku Buildpack for create-react-app
-](https://github.com/mars/create-react-app-buildpack#usage). One caveat: this
-method requires that each frontend app have its own git repository.
+Pretty much the same as `auth-server`, though in relevant scripts, substitute
+`backend` for `auth-server`.
+
+### Front End
+
+TODO

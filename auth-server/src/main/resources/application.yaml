@@ -15,6 +15,7 @@ jwt:
 server:
   error:
     include-message: always
+  port: 8099
 
 # Also need to disable auth on these endpoints to use them
 springdoc:

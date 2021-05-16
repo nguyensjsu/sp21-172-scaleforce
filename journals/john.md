@@ -57,15 +57,17 @@ I didn't face any challenges this week besides a very busy schedule :P
 
 ### Tasks
 
-TODO "A snapshot (point-in-time) image of the Team's Task Board highlighting
-which "Card" you worked on"
+![john week 4](./images/john/jg-2.png)
+
+- [x] i worked on syncing the backend auth server with react.
+- [x] deployed the backend office app on Netlify
+- [x] created frontend services
 
 ### Accomplishments
 
-TODO "A discussion of your accomplishments that week with a list of links to
-your Code Commits and PRs"
+[work for auth](https://github.com/nguyensjsu/sp21-172-scaleforce/tree/add-auth-to-frontend)
+[link to netlify](https://vigilant-wiles-bee8f3.netlify.app/)
 
 ### Challenges
 
-TODO "A discussion of the challenges you faced that week and how you resolved
-those issues"
+the auth server was frustrating to work with because of a cors issue. this happens when you don't have a proxy or are querying from a non trusted source. we are going to fix that by ignoring cors to avoid setting up the proxy for now

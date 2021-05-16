@@ -1,0 +1,25 @@
+spring:
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss ZZZZ
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/auth
+    username: root
+    password: cmpe172
+
+server:
+  error:
+    include-message: always
+
+# Also need to disable auth on these endpoints to use them
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    # need the html to use this
+    enabled: false
+
+auth:
+  url: http://172.17.0.1:8099
