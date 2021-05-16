@@ -1,5 +1,10 @@
 import { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from 'react-router-dom';
 
 import Dashboard from './screens/Dashboard';
 import Users from './screens/Users';
@@ -20,11 +25,11 @@ export default function App() {
     const user = getCurrentUser();
     setIsAuthenticated(!!user);
     setIsVerifying(false);
-  }, []);
+  }, [isAuthenticated]);
 
   return (
     <Router>
-      {isAuthenticated && <Navbar />}
+      {isAuthenticated && <Navbar onLogout={() => setIsAuthenticated(false)} />}
       <Switch>
         <ProtectedRoute
           exact
@@ -54,7 +59,16 @@ export default function App() {
           isAuthenticated={isAuthenticated}
           isVerifying={isVerifying}
         />
-        <Route path="/login" component={Login} />
+        <Route
+          path="/login"
+          component={() =>
+            isAuthenticated ? (
+              <Redirect to="/dashboard" />
+            ) : (
+              <Login onLogin={() => setIsAuthenticated(true)} />
+            )
+          }
+        />
         <Route path="/signup" component={Signup} />
         <Route path="/" component={isAuthenticated ? Dashboard : Login} />
       </Switch>

@@ -3,16 +3,13 @@ import TextInput from '../../components/TextInput';
 import { useForm } from 'react-hook-form';
 import { login } from '../../services/auth';
 
-export default function Login() {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm();
+export default function Login({ onLogin }) {
+  const { register, handleSubmit } = useForm();
   const onSubmit = async (data) => {
     const res = await login(data.email, data.password);
-    console.log(res);
+    if (res) {
+      onLogin();
+    }
   };
 
   return (

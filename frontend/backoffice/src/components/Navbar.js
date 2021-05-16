@@ -2,6 +2,7 @@ import { Fragment } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { MenuIcon, XIcon } from '@heroicons/react/outline';
 import { Link, useLocation } from 'react-router-dom';
+import { logout } from '../services/auth';
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard' },
@@ -14,7 +15,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
-export default function Navbar() {
+export default function Navbar({ onLogout }) {
   const location = useLocation();
   return (
     <Disclosure as="nav" className="bg-gray-800">
@@ -109,41 +110,18 @@ export default function Navbar() {
                         >
                           <Menu.Item>
                             {({ active }) => (
-                              <a
-                                href="#"
+                              <span
+                                onClick={() => {
+                                  logout();
+                                  onLogout();
+                                }}
                                 className={classNames(
                                   active ? 'bg-gray-100' : '',
                                   'block px-4 py-2 text-sm text-gray-700'
                                 )}
                               >
-                                Your Profile
-                              </a>
-                            )}
-                          </Menu.Item>
-                          <Menu.Item>
-                            {({ active }) => (
-                              <a
-                                href="#"
-                                className={classNames(
-                                  active ? 'bg-gray-100' : '',
-                                  'block px-4 py-2 text-sm text-gray-700'
-                                )}
-                              >
-                                Settings
-                              </a>
-                            )}
-                          </Menu.Item>
-                          <Menu.Item>
-                            {({ active }) => (
-                              <a
-                                href="#"
-                                className={classNames(
-                                  active ? 'bg-gray-100' : '',
-                                  'block px-4 py-2 text-sm text-gray-700'
-                                )}
-                              >
-                                Sign out
-                              </a>
+                                Signout
+                              </span>
                             )}
                           </Menu.Item>
                         </Menu.Items>

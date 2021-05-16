@@ -1,3 +1,4 @@
+import axios from 'axios';
 const API_URL = 'https://auth.scaleforce.dev/';
 
 export const register = (username, email, password) => {
@@ -14,24 +15,21 @@ export const register = (username, email, password) => {
   });
 };
 
-export const login = (username, password) => {
-  return fetch(API_URL + 'auth', {
-    method: 'POST',
-    mode: 'cors',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      email: username,
+export const login = async (email, password) => {
+  const res = await axios({
+    method: 'post',
+    url: 'https://auth.scaleforce.dev/auth',
+    data: {
+      email,
       password,
-    }),
-  }).then((response) => {
-    if (response.data.accessToken) {
-      localStorage.setItem('user', JSON.stringify(response.data));
-    }
-
-    return response.data;
+    },
   });
+
+  if (res.data) {
+    localStorage.setItem('user', JSON.stringify(res.data.jwt));
+  }
+
+  return res.data.uid;
 };
 
 export const logout = () => {
