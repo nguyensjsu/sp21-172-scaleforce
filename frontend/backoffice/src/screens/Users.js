@@ -1,4 +1,7 @@
+import { useEffect } from 'react';
 import Table from '../components/Table';
+import { validate } from '../services/auth';
+import { fetchUsers } from '../services/users';
 
 const data = [
   {
@@ -29,6 +32,10 @@ const columns = [
 ];
 
 const Users = () => {
+  useEffect(() => {
+    fetchUsers();
+    // validate();
+  }, []);
   return (
     <div className="flex justify-center content-center">
       <Table data={data} columns={columns} />

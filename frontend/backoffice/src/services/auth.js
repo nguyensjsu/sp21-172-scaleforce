@@ -1,24 +1,25 @@
 import axios from 'axios';
-const API_URL = 'https://auth.scaleforce.dev/';
 
-export const register = (username, email, password) => {
-  return fetch(API_URL + 'auth', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: {
-      username,
-      email,
-      password,
-    },
-  });
-};
+// export const register = (username, email, password) => {
+//   return fetch(API_URL + 'auth', {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//     body: {
+//       username,
+//       email,
+//       password,
+//     },
+//   });
+// };
+
+const url = 'https://auth.scaleforce.dev/';
 
 export const login = async (email, password) => {
   const res = await axios({
     method: 'post',
-    url: 'https://auth.scaleforce.dev/auth',
+    url: url + 'auth',
     data: {
       email,
       password,
@@ -32,6 +33,17 @@ export const login = async (email, password) => {
   return res.data.uid;
 };
 
+export const validate = async () => {
+  const res = await axios({
+    method: 'post',
+    url: url + 'validate',
+    headers: {
+      Authorization: `Bearer ${JSON.parse(localStorage.getItem('user'))}`,
+    },
+  });
+
+  console.log(res);
+};
 export const logout = () => {
   localStorage.removeItem('user');
 };
