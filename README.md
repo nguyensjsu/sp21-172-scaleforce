@@ -26,7 +26,9 @@ TODO integrations selected
 
 ## Cloud Deployment
 
-TODO architecture diagram, "how does the system scale?", "can it handle > 1
+![](./images/scaleforce.png)
+
+TODO text description, "how does the system scale?", "can it handle > 1
 million mobile devices?"
 
 ## Technical Requirements
