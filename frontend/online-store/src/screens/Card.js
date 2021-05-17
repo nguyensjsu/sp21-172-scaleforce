@@ -5,7 +5,7 @@ import Table from '../components/Table'
 const data = [
   {
     col1: '156-875',
-    col2: '$20.00',
+    col2: '5',
   },
 ];
 
@@ -15,7 +15,7 @@ const columns = [
     accessor: 'col1'
   },
   {
-    Header: 'Balance',
+    Header: 'Number of Haircuts',
     accessor: 'col2',
   },
 ];
