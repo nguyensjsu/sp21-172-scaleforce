@@ -32,6 +32,10 @@ const columns = [
     Header: 'Service',
     accessor: 'col4',
   },
+  {
+    Header: 'Delete',
+    accessor: (str) => 'delete'
+  },
 ];
 
 const Appointments = () => {
