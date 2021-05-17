@@ -1,14 +1,14 @@
 import axios from 'axios';
 import { validate } from './auth';
 
-const AUTH_URL = 'https://auth.scaleforce.dev/';
+const API_URL = 'https://api.scaleforce.dev/';
 
-export const fetchUsers = async () => {
+export const fetchAppointments = async () => {
   const validated = await validate();
   const { Authorization } = validated.config.headers;
   if (!Authorization) return;
   try {
-    const res = await axios.get(AUTH_URL + 'users', {
+    const res = await axios.get(API_URL + 'admin/appointments', {
       headers: { Authorization },
     });
     return res.data;

@@ -8,7 +8,7 @@ const navigation = [
   { name: 'Dashboard', href: '/dashboard' },
   { name: 'Users', href: '/users' },
   { name: 'Appointments', href: '/appointments' },
-  { name: 'Calendar', href: '/calendar' },
+  // { name: 'Calendar', href: '/calendar' },
 ];
 
 function classNames(...classes) {
