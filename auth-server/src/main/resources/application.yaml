@@ -9,12 +9,13 @@ spring:
 
 jwt:
   issuer: HaircutAuthServer
-  window: 120
+  window: 3600
   key: dI77U8bhgMefJrG6qQpugl95n8bADM3shHbVO43vX+g=
 
 server:
   error:
     include-message: always
+  port: 8099
 
 # Also need to disable auth on these endpoints to use them
 springdoc:

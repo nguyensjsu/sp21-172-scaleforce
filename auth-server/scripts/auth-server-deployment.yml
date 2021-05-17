@@ -17,10 +17,10 @@ spec:
       - name: auth-server
         image: scaleforce172/auth-server:latest
         ports:
-        - containerPort: 8080
+        - containerPort: 8099
         env:
           - name: MYSQL_HOST
             valueFrom:
               secretKeyRef:
-                name: db-ip
+                name: auth-db-ip
                 key: db_host

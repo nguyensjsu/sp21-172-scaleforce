@@ -83,15 +83,23 @@ for a quicker, more automatic method.
 
 ### Tasks
 
-TODO "A snapshot (point-in-time) image of the Team's Task Board highlighting
-which "Card" you worked on"
+![patrick tasks week 4](./images/patrick/patrick-tasks-4.png)
 
 ### Accomplishments
 
-TODO "A discussion of your accomplishments that week with a list of links to
-your Code Commits and PRs"
+I primarily worked on [Auth deployment
+upgrades](https://github.com/nguyensjsu/sp21-172-scaleforce/issues/29) and [API
+deployment](https://github.com/nguyensjsu/sp21-172-scaleforce/issues/33). I
+also worked with Nick to review [Start
+api](https://github.com/nguyensjsu/sp21-172-scaleforce/pull/35). I did a little
+work updating tests for the auth-server (see
+[auth-tests](https://github.com/nguyensjsu/sp21-172-scaleforce/tree/auth-tests)),
+though for the sake of an MVP, tests were not high-priority.
 
 ### Challenges
 
-TODO "A discussion of the challenges you faced that week and how you resolved
-those issues"
+My primary challenge was to figure out how to serve our auth-server and backend
+as services over HTTPS. Luckily, I discovered [Using cert-manager for automated
+TLS
+certificate](https://docs.konghq.com/kubernetes-ingress-controller/1.2.x/guides/cert-manager/),
+which made the process relatively simple.
