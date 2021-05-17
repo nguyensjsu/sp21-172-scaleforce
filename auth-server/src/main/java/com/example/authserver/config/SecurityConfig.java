@@ -31,12 +31,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
     protected void configure(HttpSecurity httpSecurity) throws Exception
     {
         httpSecurity
+                .cors()
+                .and()
                 .csrf()
                 .disable()
                 .exceptionHandling()
                 .and()
                 .authorizeRequests()
-//                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 // allow JWT functions without valid JWT
                 .antMatchers("/auth", "/validate").permitAll()
                 // Allow user creation without valid JWT
