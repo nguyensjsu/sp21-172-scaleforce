@@ -5,7 +5,6 @@ import Login from './screens/Auth/Login';
 import Navbar from './components/Navbar'
 import ProtectedRoute from "./components/ProtectedRoute";
 import Appointments from "./screens/Appointments";
-import Calendar from "./screens/Calendar";
 import Signup from "./screens/Auth/Signup";
 import NewAppointment from "./screens/NewAppointment";
 
@@ -20,13 +19,6 @@ export default function App() {
           exact
           path="/appointments"
           component={Appointments}
-          isAuthenticated={isAuthenticated}
-          isVerifying={isVerifying}
-        />
-        <ProtectedRoute
-          exact
-          path="/calendar"
-          component={Calendar}
           isAuthenticated={isAuthenticated}
           isVerifying={isVerifying}
         />
