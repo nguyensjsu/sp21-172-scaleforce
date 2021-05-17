@@ -5,7 +5,6 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Navbar from './components/Navbar'
 import Signup from './screens/Auth/Signup'
 import Login from './screens/Auth/Login'
-import Dashboard from "./screens/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Appointments from "./screens/Appointments";
 import Calendar from "./screens/Calendar";
@@ -19,13 +18,6 @@ export default function App() {
     <Router>
       {isAuthenticated && <Navbar />}
       <Switch>
-        <ProtectedRoute
-          exact
-          path="/dashboard"
-          component={Dashboard}
-          isAuthenticated={isAuthenticated}
-          isVerifying={isVerifying}
-        />
         <ProtectedRoute
           exact
           path="/appointments"
@@ -49,7 +41,7 @@ export default function App() {
         />
         <Route path="/login" component={Login} />
         <Route path="/signup" component={Signup} />
-        <Route path="/" component={isAuthenticated ? Dashboard : Login} />
+        <Route path="/" component={isAuthenticated ? Appointments : Login} />
       </Switch>
     </Router>
   );

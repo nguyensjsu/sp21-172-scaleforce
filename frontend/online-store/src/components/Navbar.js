@@ -4,7 +4,6 @@ import { MenuIcon, XIcon } from '@heroicons/react/outline';
 import { Link, useLocation } from 'react-router-dom';
 
 const navigation = [
-  { name: 'Dashboard', href: '/dashboard' },
   { name: 'Appointments', href: '/appointments' },
   { name: 'Calendar', href: '/calendar' },
   {name: 'Card', href: '/card'},

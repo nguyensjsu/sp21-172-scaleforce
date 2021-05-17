@@ -2,35 +2,29 @@ import Table from '../components/Table';
 
 const data = [
   {
-    col1: 'Jack Gisel',
-    col2: 'Steve P',
-    col3: '11:30am',
-    col4: 'Haircut + Beardtrim',
+    col1: 'Steve P',
+    col2: '11:30am',
+    col3: 'Haircut + Beardtrim',
   },
   {
-    col1: 'Jesus',
-    col2: 'Steve P',
-    col3: '9:30am',
-    col4: 'Haircut',
+    col1: 'Steve P',
+    col2: '9:30am',
+    col3: 'Haircut',
   },
 ];
 
 const columns = [
   {
-    Header: 'Name',
+    Header: 'Barber',
     accessor: 'col1',
   },
   {
-    Header: 'Barber',
+    Header: 'Time',
     accessor: 'col2',
   },
   {
-    Header: 'Time',
-    accessor: 'col3',
-  },
-  {
     Header: 'Service',
-    accessor: 'col4',
+    accessor: 'col3',
   },
 ];
 
