@@ -14,15 +14,14 @@ const NewAppointment = () => {
   const [service, setService] = useState('TRIM');
 
   async function handleSubmit() {
-    const startDate = moment(date + time);
-    console.log(startDate.toISOString());
+    const startDate = moment(date);
+
     addAppointment({
       service,
-      startDate: date,
-      endDate: date,
+      startDate: startDate.format('yyyy-MM-DD HH:mm:ss ZZ'),
+      endDate: startDate.add('1', 'H').format('yyyy-MM-DD HH:mm:ss ZZ'),
       barber,
-      id: Math.random() * 1000,
-      bookedUserId: '',
+      booked: null,
     });
   }
 

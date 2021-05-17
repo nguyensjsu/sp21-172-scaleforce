@@ -23,7 +23,7 @@ export const addAppointment = async (appointment) => {
   console.log(appointment);
   if (!Authorization) return;
   try {
-    const res = await axios.post(API_URL + 'admin/appointments', appointment, {
+    const res = await axios.post(API_URL + 'admin/appointment', appointment, {
       headers: { Authorization },
     });
     return res.data;
