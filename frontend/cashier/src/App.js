@@ -1,19 +1,34 @@
-import { useState } from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from 'react-router-dom';
 
 import Login from './screens/Auth/Login';
-import Navbar from './components/Navbar'
-import ProtectedRoute from "./components/ProtectedRoute";
-import Appointments from "./screens/Appointments";
-import Signup from "./screens/Auth/Signup";
-import NewAppointment from "./screens/NewAppointment";
+import Navbar from './components/Navbar';
+import ProtectedRoute from './components/ProtectedRoute';
+import Appointments from './screens/Appointments';
+import Signup from './screens/Auth/Signup';
+import NewAppointment from './screens/NewAppointment';
+import { getCurrentUser } from './services/auth';
 
 export default function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
-  const [isVerifying,setIsVerifying] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
+
+  useEffect(() => {
+    setIsVerifying(true);
+    const user = getCurrentUser();
+    console.log('User', user);
+    setIsAuthenticated(!!user);
+    setIsVerifying(false);
+  }, [isAuthenticated]);
+
   return (
     <Router>
-      {isAuthenticated && <Navbar/>}
+      {isAuthenticated && <Navbar onLogout={() => setIsAuthenticated(false)} />}
       <Switch>
         <ProtectedRoute
           exact
@@ -29,7 +44,16 @@ export default function App() {
           isAuthenticated={isAuthenticated}
           isVerifying={isVerifying}
         />
-        <Route path="/login" component={Login} />
+        <Route
+          path="/login"
+          component={() =>
+            isAuthenticated ? (
+              <Redirect to="/appointments" />
+            ) : (
+              <Login onLogin={() => setIsAuthenticated(true)} />
+            )
+          }
+        />
         <Route path="/signup" component={Signup} />
         <Route path="/" component={isAuthenticated ? Appointments : Login} />
       </Switch>
