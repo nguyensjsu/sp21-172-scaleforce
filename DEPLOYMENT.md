@@ -262,7 +262,6 @@ spec:
     - http01:
         ingress:
           class: kong" | kubectl apply -f -
-clusterissuer.cert-manager.io/letsencrypt-prod configured
 ```
 
 (Note the difference versus the Kong Docs for `apiVersion`)
@@ -293,7 +292,6 @@ spec:
           serviceName: auth-server-clusterip
           servicePort: 80
 ' | kubectl apply -f -
-ingress.extensions/backend-scaleforce-dev configured
 ```
 
 (Note: issuing takes between 30 minutes to an hour)
