@@ -22,5 +22,6 @@ public class Card
     @NonNull
     private String userId;
 
+    @NonNull
     private int haircutCount;
 }
