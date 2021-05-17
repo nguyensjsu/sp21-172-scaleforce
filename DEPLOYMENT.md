@@ -262,7 +262,6 @@ spec:
     - http01:
         ingress:
           class: kong" | kubectl apply -f -
-clusterissuer.cert-manager.io/letsencrypt-prod configured
 ```
 
 (Note the difference versus the Kong Docs for `apiVersion`)
@@ -293,7 +292,6 @@ spec:
           serviceName: auth-server-clusterip
           servicePort: 80
 ' | kubectl apply -f -
-ingress.extensions/backend-scaleforce-dev configured
 ```
 
 (Note: issuing takes between 30 minutes to an hour)
@@ -302,6 +300,36 @@ ingress.extensions/backend-scaleforce-dev configured
 
 Pretty much the same as `auth-server`, though in relevant scripts, substitute
 `backend` for `auth-server`.
+
+##### HTTPS
+
+Provisioning the certificate uses the following script:
+
+```bash
+echo '
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: backend-scaleforce-dev
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: kong
+spec:
+  tls:
+  - secretName: backend-scaleforce-dev
+    hosts:
+    - api.scaleforce.dev
+  rules:
+  - host: api.scaleforce.dev
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: backend-clusterip
+          servicePort: 80
+' | kubectl apply -f -
+```
 
 ### Front End
 
