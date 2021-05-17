@@ -7,6 +7,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Appointments from "./screens/Appointments";
 import Calendar from "./screens/Calendar";
 import Signup from "./screens/Auth/Signup";
+import NewAppointment from "./screens/NewAppointment";
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(true);
@@ -26,6 +27,13 @@ export default function App() {
           exact
           path="/calendar"
           component={Calendar}
+          isAuthenticated={isAuthenticated}
+          isVerifying={isVerifying}
+        />
+        <ProtectedRoute
+          exact
+          path="/newappointment"
+          component={NewAppointment}
           isAuthenticated={isAuthenticated}
           isVerifying={isVerifying}
         />

@@ -5,6 +5,7 @@ import { Link, useLocation } from 'react-router-dom';
 
 const navigation = [
   { name: 'Appointments', href: '/appointments' },
+  {name: 'New Appointment', href: '/newappointment'},
   { name: 'Calendar', href: '/calendar' },
 ];
 
