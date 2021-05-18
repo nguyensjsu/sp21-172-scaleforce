@@ -5,6 +5,7 @@ import com.java.backend.repositories.AppointmentRepository;
 import com.java.backend.repositories.CardRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -13,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 @RestController
+@Secured("ROLE_ADMIN")
 @RequestMapping("/admin")
 public class AdminController
 {

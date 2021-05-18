@@ -16,11 +16,11 @@ server:
 # Also need to disable auth on these endpoints to use them
 springdoc:
   api-docs:
-    enabled: false
+    enabled: true
   swagger-ui:
     # need the html to use this
     enabled: false
 
 auth:
-  url: http://172.17.0.1:8099 # dev
+  url: http://localhost:8099 # dev
   # url: https://auth.scaleforce.dev # prod

@@ -1,4 +1,4 @@
-package com.example.authserver;
+package com.example.authserver.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

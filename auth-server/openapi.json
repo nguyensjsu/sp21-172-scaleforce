@@ -68,6 +68,15 @@
         "properties": {
           "jwt": {
             "type": "string"
+          },
+          "permissions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "email": {
+            "type": "string"
           }
         }
       },

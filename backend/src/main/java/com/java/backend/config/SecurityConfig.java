@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 @Configuration
@@ -34,15 +35,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                 .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                // OpenAPI endpoint
+                // OpenAPI endpoint, enable this and springdocs apidocs value
+                // then comment out filter line to generate docs with make docs command
 //                .antMatchers(HttpMethod.GET, "/v3/api-docs").permitAll()
-//                .anyRequest().authenticated()
+                .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-//        httpSecurity.addFilterBefore(new AuthFilter(), AuthFilter.class);
-//        http.addFilterBefore(new JwtFilter(),UsernamePasswordAuthenticationFilter.class).authorizeRequests();
-//        http.addFilterBefore(jwtRequestFilter,UsernamePasswordAuthenticationFilter.class).authorizeRequests();
-
+        httpSecurity.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }

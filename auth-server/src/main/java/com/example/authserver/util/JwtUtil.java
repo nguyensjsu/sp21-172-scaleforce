@@ -1,6 +1,6 @@
 package com.example.authserver.util;
 
-import com.example.authserver.AuthProperties;
+import com.example.authserver.config.AuthProperties;
 import com.example.authserver.entities.Role;
 import com.example.authserver.repositories.UserRepository;
 import io.jsonwebtoken.Claims;
