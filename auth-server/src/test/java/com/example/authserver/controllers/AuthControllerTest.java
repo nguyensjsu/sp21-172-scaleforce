@@ -30,7 +30,7 @@ public class AuthControllerTest {
   @Test
   void getJWT() throws Exception {
     UserRequest userRequest = new UserRequest();
-    userRequest.setEmail("Nick");
+    userRequest.setEmail("Nick@email.test");
     userRequest.setPassword("N");
 
     mockMvc
@@ -54,7 +54,7 @@ public class AuthControllerTest {
   @Test
   void getJWT_invalidUsername() throws Exception {
     UserRequest userRequest = new UserRequest();
-    userRequest.setEmail("Bob");
+    userRequest.setEmail("Bob@email.test");
     userRequest.setPassword("B");
 
     mockMvc.perform(
@@ -67,7 +67,7 @@ public class AuthControllerTest {
   @Test
   void getJWT_invalidPassword() throws Exception {
     UserRequest userRequest = new UserRequest();
-    userRequest.setEmail("Nick");
+    userRequest.setEmail("Nick@email.test");
     userRequest.setPassword("A");
 
     mockMvc.perform(
@@ -81,7 +81,7 @@ public class AuthControllerTest {
   void validateJWT() throws Exception {
 
     UserRequest userRequest = new UserRequest();
-    userRequest.setEmail("Nick");
+    userRequest.setEmail("Nick@email.test");
     userRequest.setPassword("N");
 
     MvcResult mvcResult = mockMvc
@@ -257,7 +257,7 @@ public class AuthControllerTest {
   @Test
   void allUsers_RoleAdmin() throws Exception {
     UserRequest userRequest = new UserRequest();
-    userRequest.setEmail("Nick");
+    userRequest.setEmail("Nick@email.test");
     userRequest.setPassword("N");
 
     MvcResult mvcResult = mockMvc
@@ -276,15 +276,15 @@ public class AuthControllerTest {
                 .header("Authorization", "Bearer: " + token))
         .andExpect(status().isOk())
         .andExpect(jsonPath(("$[0].id")).value(1))
-        .andExpect(jsonPath(("$[0].email")).value("Nick"))
+        .andExpect(jsonPath(("$[0].email")).value("Nick@email.test"))
         .andExpect(jsonPath(("$[0].password")).value("N"))
         .andExpect(jsonPath(("$[0].role")).value("ROLE_ADMIN"))
         .andExpect(jsonPath(("$[1].id")).value(2))
-        .andExpect(jsonPath(("$[1].email")).value("G"))
+        .andExpect(jsonPath(("$[1].email")).value("G@email.test"))
         .andExpect(jsonPath(("$[1].password")).value("G"))
         .andExpect(jsonPath(("$[1].role")).value("ROLE_OFFICE"))
         .andExpect(jsonPath(("$[2].id")).value(3))
-        .andExpect(jsonPath(("$[2].email")).value("Jake"))
+        .andExpect(jsonPath(("$[2].email")).value("Jake@email.test"))
         .andExpect(jsonPath(("$[2].password")).value("J"))
         .andExpect(jsonPath(("$[2].role")).value("ROLE_USER"));
   }
@@ -292,7 +292,7 @@ public class AuthControllerTest {
   @Test
   void allUsers_RoleOffice() throws Exception {
     UserRequest userRequest = new UserRequest();
-    userRequest.setEmail("G");
+    userRequest.setEmail("G@email.test");
     userRequest.setPassword("G");
 
     MvcResult mvcResult = mockMvc
@@ -311,15 +311,15 @@ public class AuthControllerTest {
                 .header("Authorization", "Bearer: " + token))
         .andExpect(status().isOk())
         .andExpect(jsonPath(("$[0].id")).value(1))
-        .andExpect(jsonPath(("$[0].email")).value("Nick"))
+        .andExpect(jsonPath(("$[0].email")).value("Nick@email.test"))
         .andExpect(jsonPath(("$[0].password")).value("N"))
         .andExpect(jsonPath(("$[0].role")).value("ROLE_ADMIN"))
         .andExpect(jsonPath(("$[1].id")).value(2))
-        .andExpect(jsonPath(("$[1].email")).value("G"))
+        .andExpect(jsonPath(("$[1].email")).value("G@email.test"))
         .andExpect(jsonPath(("$[1].password")).value("G"))
         .andExpect(jsonPath(("$[1].role")).value("ROLE_OFFICE"))
         .andExpect(jsonPath(("$[2].id")).value(3))
-        .andExpect(jsonPath(("$[2].email")).value("Jake"))
+        .andExpect(jsonPath(("$[2].email")).value("Jake@email.test"))
         .andExpect(jsonPath(("$[2].password")).value("J"))
         .andExpect(jsonPath(("$[2].role")).value("ROLE_USER"));
   }
@@ -327,7 +327,7 @@ public class AuthControllerTest {
   @Test
   void allUsers_RoleUser() throws Exception {
     UserRequest userRequest = new UserRequest();
-    userRequest.setEmail("Jake");
+    userRequest.setEmail("Jake@email.test");
     userRequest.setPassword("J");
 
     MvcResult mvcResult = mockMvc
@@ -350,7 +350,7 @@ public class AuthControllerTest {
   @Test
   void getUserById_RoleAdmin() throws Exception {
     UserRequest userRequest = new UserRequest();
-    userRequest.setEmail("Nick");
+    userRequest.setEmail("Nick@email.test");
     userRequest.setPassword("N");
 
     MvcResult mvcResult = mockMvc
@@ -369,7 +369,7 @@ public class AuthControllerTest {
                 .header("Authorization", "Bearer: " + token))
         .andExpect(status().isOk())
         .andExpect(jsonPath(("$.id")).value(1))
-        .andExpect(jsonPath(("$.email")).value("Nick"))
+        .andExpect(jsonPath(("$.email")).value("Nick@email.test"))
         .andExpect(jsonPath(("$.password")).value("N"))
         .andExpect(jsonPath(("$.role")).value("ROLE_ADMIN"));
   }
@@ -377,7 +377,7 @@ public class AuthControllerTest {
   @Test
   void getUserById_RoleOffice() throws Exception {
     UserRequest userRequest = new UserRequest();
-    userRequest.setEmail("G");
+    userRequest.setEmail("G@email.test");
     userRequest.setPassword("G");
 
     MvcResult mvcResult = mockMvc
@@ -396,7 +396,7 @@ public class AuthControllerTest {
                 .header("Authorization", "Bearer: " + token))
         .andExpect(status().isOk())
         .andExpect(jsonPath(("$.id")).value(1))
-        .andExpect(jsonPath(("$.email")).value("Nick"))
+        .andExpect(jsonPath(("$.email")).value("Nick@email.test"))
         .andExpect(jsonPath(("$.password")).value("N"))
         .andExpect(jsonPath(("$.role")).value("ROLE_ADMIN"));
   }
@@ -404,7 +404,7 @@ public class AuthControllerTest {
   @Test
   void getUserById_RoleUser() throws Exception {
     UserRequest userRequest = new UserRequest();
-    userRequest.setEmail("Jake");
+    userRequest.setEmail("Jake@email.test");
     userRequest.setPassword("J");
 
     MvcResult mvcResult = mockMvc
