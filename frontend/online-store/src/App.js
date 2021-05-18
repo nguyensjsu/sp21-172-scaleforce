@@ -5,11 +5,10 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Navbar from './components/Navbar'
 import Signup from './screens/Auth/Signup'
 import Login from './screens/Auth/Login'
-import Dashboard from "./screens/Dashboard";
-import Users from "./screens/Users";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Appointments from "./screens/Appointments";
 import Calendar from "./screens/Calendar";
+import Card from "./screens/Card";
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(true);
@@ -19,20 +18,6 @@ export default function App() {
     <Router>
       {isAuthenticated && <Navbar />}
       <Switch>
-        <ProtectedRoute
-          exact
-          path="/dashboard"
-          component={Dashboard}
-          isAuthenticated={isAuthenticated}
-          isVerifying={isVerifying}
-        />
-        <ProtectedRoute
-          exact
-          path="/users"
-          component={Users}
-          isAuthenticated={isAuthenticated}
-          isVerifying={isVerifying}
-        />
         <ProtectedRoute
           exact
           path="/appointments"
@@ -47,9 +32,16 @@ export default function App() {
           isAuthenticated={isAuthenticated}
           isVerifying={isVerifying}
         />
+        <ProtectedRoute
+          exact
+          path="/card"
+          component={Card}
+          isAuthenticated={isAuthenticated}
+          isVerifying={isVerifying}
+        />
         <Route path="/login" component={Login} />
         <Route path="/signup" component={Signup} />
-        <Route path="/" component={isAuthenticated ? Dashboard : Login} />
+        <Route path="/" component={isAuthenticated ? Appointments : Login} />
       </Switch>
     </Router>
   );
