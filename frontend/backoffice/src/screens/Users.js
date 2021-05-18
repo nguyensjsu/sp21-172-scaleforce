@@ -1,37 +1,37 @@
+import { useEffect, useState } from 'react';
 import Table from '../components/Table';
-
-const data = [
-  {
-    col1: 'Jack Gisel',
-    col2: 'jackgisel@gmail.com',
-    col3: '23',
-  },
-  {
-    col1: 'Jesus',
-    col2: 'jesus@gmail.com',
-    col3: '10',
-  },
-];
+import { fetchUsers } from '../services/users';
 
 const columns = [
   {
     Header: 'Name',
-    accessor: 'col1',
+    accessor: 'name',
   },
   {
     Header: 'Email',
-    accessor: 'col2',
+    accessor: 'email',
   },
   {
     Header: 'Appoints',
-    accessor: 'col3',
+    accessor: 'id',
   },
 ];
 
 const Users = () => {
+  const [users, setUsers] = useState([]);
+  useEffect(() => {
+    getUsers();
+  }, []);
+  async function getUsers() {
+    const data = await fetchUsers();
+    data.forEach((user) => {
+      user.name = user.email.split('@')[0];
+    });
+    setUsers(data);
+  }
   return (
     <div className="flex justify-center content-center">
-      <Table data={data} columns={columns} />
+      <Table data={users} columns={columns} />
     </div>
   );
 };
