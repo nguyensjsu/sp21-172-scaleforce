@@ -1,32 +1,54 @@
-import Table from '../components/Table';
+import { useEffect, useState } from 'react';
+import moment from 'moment';
 
-const data = [
-  {
-    col1: '9',
-    col2: '4',
-    col3: '$230.00',
-  },
-];
+import Table from '../components/Table';
+import { fetchUserAppointments } from '../services/appointments';
 
 const columns = [
   {
-    Header: 'Users',
-    accessor: 'col1',
+    Header: 'Name',
+    accessor: 'bookedUserId',
   },
   {
-    Header: 'Appointments',
-    accessor: 'col2',
+    Header: 'Barber',
+    accessor: 'barber',
   },
   {
-    Header: 'Income',
-    accessor: 'col3',
+    Header: 'Time',
+    accessor: 'startDate',
+  },
+  {
+    Header: 'Service',
+    accessor: 'service',
   },
 ];
 
+const serviceString = {
+  TRIM: 'Trim',
+  SHAVE: 'Shave',
+  CUT_AND_BEARD: 'Haircut and Beard',
+};
+
 const Dashboard = () => {
+  const [appointments, setAppointments] = useState([]);
+  useEffect(() => {
+    getAppointments();
+  }, []);
+  async function getAppointments() {
+    const data = await fetchUserAppointments();
+    if (data) {
+      data.forEach((app) => {
+        let date = moment(app.startDate.split(' ')[0]);
+        app.startDate = date.format('MM/DD @ HH:MM');
+        if (!app.bookedUserId) app.bookedUserId = 'OPEN';
+        app.service = serviceString[app.service];
+      });
+      setAppointments(data);
+    }
+  }
   return (
     <div className="flex justify-center content-center">
-      <Table data={data} columns={columns} />
+      <Table data={appointments} columns={columns} />
     </div>
   );
 };
