@@ -2,18 +2,19 @@ import { Fragment } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { MenuIcon, XIcon } from '@heroicons/react/outline';
 import { Link, useLocation } from 'react-router-dom';
+import { logout } from '../services/auth';
 
 const navigation = [
-  { name: 'Appointments', href: '/appointments' },
-  { name: 'Calendar', href: '/calendar' },
-  {name: 'Card', href: '/card'},
+  { name: 'My appointments', href: '/dashboard' },
+  { name: 'Book An Appointment', href: '/appointments' },
+  { name: 'Card', href: '/card' },
 ];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
-export default function Navbar() {
+export default function Navbar({ onLogout }) {
   const location = useLocation();
   return (
     <Disclosure as="nav" className="bg-gray-800">
@@ -39,18 +40,12 @@ export default function Navbar() {
                     src="https://tailwindui.com/img/logos/workflow-mark-indigo-500.svg"
                     alt="Workflow"
                   />
-                  <img
-                    className="hidden lg:block h-8 w-auto"
-                    src="https://tailwindui.com/img/logos/workflow-logo-indigo-500-mark-white-text.svg"
-                    alt="Workflow"
-                  />
                 </div>
                 <div className="hidden sm:block sm:ml-6">
                   <div className="flex space-x-4">
                     {navigation.map((item) => (
-                      <Link to={item.href}>
-                        <a
-                          key={item.name}
+                      <Link key={item.name} to={item.href}>
+                        <div
                           href={item.href}
                           className={classNames(
                             location.pathname === item.href
@@ -63,7 +58,7 @@ export default function Navbar() {
                           }
                         >
                           {item.name}
-                        </a>
+                        </div>
                       </Link>
                     ))}
                   </div>
@@ -109,41 +104,18 @@ export default function Navbar() {
                         >
                           <Menu.Item>
                             {({ active }) => (
-                              <a
-                                href="#"
+                              <span
+                                onClick={() => {
+                                  logout();
+                                  onLogout();
+                                }}
                                 className={classNames(
                                   active ? 'bg-gray-100' : '',
                                   'block px-4 py-2 text-sm text-gray-700'
                                 )}
                               >
-                                Your Profile
-                              </a>
-                            )}
-                          </Menu.Item>
-                          <Menu.Item>
-                            {({ active }) => (
-                              <a
-                                href="#"
-                                className={classNames(
-                                  active ? 'bg-gray-100' : '',
-                                  'block px-4 py-2 text-sm text-gray-700'
-                                )}
-                              >
-                                Settings
-                              </a>
-                            )}
-                          </Menu.Item>
-                          <Menu.Item>
-                            {({ active }) => (
-                              <a
-                                href="#"
-                                className={classNames(
-                                  active ? 'bg-gray-100' : '',
-                                  'block px-4 py-2 text-sm text-gray-700'
-                                )}
-                              >
-                                Sign out
-                              </a>
+                                Signout
+                              </span>
                             )}
                           </Menu.Item>
                         </Menu.Items>
@@ -158,9 +130,8 @@ export default function Navbar() {
           <Disclosure.Panel className="sm:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1">
               {navigation.map((item) => (
-                <Link to={item.href}>
-                  <a
-                    key={item.name}
+                <Link key={item.name} to={item.href}>
+                  <div
                     href={item.href}
                     className={classNames(
                       location.pathname === item.href
@@ -179,7 +150,7 @@ export default function Navbar() {
                     }
                   >
                     {item.name}
-                  </a>
+                  </div>
                 </Link>
               ))}
             </div>

@@ -36,13 +36,15 @@ const Appointments = () => {
   }, []);
   async function getAppointments() {
     const data = await fetchAppointments();
-    data.forEach((app) => {
-      let date = moment(app.startDate.split(' ')[0]);
-      app.startDate = date.format('MM/DD @ HH:MM');
-      if (!app.bookedUserId) app.bookedUserId = 'OPEN';
-      app.service = serviceString[app.service];
-    });
-    setAppointments(data);
+    if (data) {
+      data.forEach((app) => {
+        let date = moment(app.startDate.split(' ')[0]);
+        app.startDate = date.format('MM/DD @ HH:MM');
+        if (!app.bookedUserId) app.bookedUserId = 'OPEN';
+        app.service = serviceString[app.service];
+      });
+      setAppointments(data);
+    }
   }
   return (
     <div className="flex justify-center content-center">

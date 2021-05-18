@@ -10,6 +10,7 @@ export const login = async (email, password) => {
 
   if (res.data) {
     localStorage.setItem('user', JSON.stringify(res.data.jwt));
+    localStorage.setItem('uid', JSON.stringify(res.data.uid));
   }
 
   return res.data.uid;
@@ -36,6 +37,7 @@ export const validate = async () => {
     return;
   }
 };
+
 export const logout = () => {
   localStorage.removeItem('user');
 };

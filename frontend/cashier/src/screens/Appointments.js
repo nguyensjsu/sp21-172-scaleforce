@@ -1,59 +1,76 @@
-import Table from '../components/Table';
+import { useEffect, useState } from 'react';
 
-const data = [
-  {
-    col1: 'Jack Gisel',
-    col2: "Today",
-    col3: 'Steve P',
-    col4: '11:30am',
-    col5: "12:30pm",
-    col6: 'Haircut + Beardtrim',
-  },
-  {
-    col1: 'Jesus',
-    col2: "Today",
-    col3: 'Steve P',
-    col4: '9:30am',
-    col5: "10:00am",
-    col6: 'Haircut',
-  },
-];
+import Table from '../components/Table';
+import { deleteAppointment, fetchAppointments } from '../services/appointments';
+
+const serviceString = {
+  TRIM: 'Trim',
+  SHAVE: 'Shave',
+  CUT_AND_BEARD: 'Haircut and Beard',
+};
 
 const columns = [
   {
     Header: 'Customer',
-    accessor: 'col1',
+    accessor: 'bookedUserId',
   },
   {
     Header: 'Date',
-    accessor: 'col2',
+    accessor: 'date',
   },
   {
     Header: 'Barber',
-    accessor: 'col3',
+    accessor: 'barber',
   },
   {
     Header: 'Start Time',
-    accessor: 'col4',
+    accessor: 'startTime',
   },
   {
     Header: 'End Time',
-    accessor: 'col5',
+    accessor: 'endTime',
   },
   {
     Header: 'Service',
-    accessor: 'col6',
+    accessor: 'service',
   },
-  {
-    Header: 'Delete',
-    accessor: (str) => 'delete'
-  },
+  // {
+  //   Header: 'Delete',
+  //   accessor: (str, i) => (
+  //     <a href="#" className="text-red-600" onClick={() => str.delete()}>
+  //       Delete Appointment
+  //     </a>
+  //   ),
+  // },
 ];
 
 const Appointments = () => {
+  const [appointments, setAppointments] = useState([]);
+  useEffect(() => {
+    getAppointments();
+  }, []);
+  async function handleDelete(id) {
+    const res = await deleteAppointment(id);
+    console.log(res);
+  }
+  async function getAppointments() {
+    const data = await fetchAppointments();
+    if (data) {
+      data.forEach((app) => {
+        app.date = app.startDate.split(' ')[0];
+        app.startTime = app.startDate.split(' ')[1];
+        app.endTime = app.endDate.split(' ')[1];
+        if (!app.bookedUserId) app.bookedUserId = 'OPEN';
+        app.service = serviceString[app.service];
+        app.delete = () => handleDelete(app.id);
+      });
+      console.log(data);
+      setAppointments(data);
+    }
+  }
   return (
     <div className="flex justify-center content-center">
-      <Table data={data} columns={columns} />
+      <Table data={appointments} columns={columns} />
     </div>
   );
 };
