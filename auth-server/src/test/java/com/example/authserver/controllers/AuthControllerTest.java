@@ -210,7 +210,7 @@ public class AuthControllerTest {
     {
       "jti": "081ed612-281a-451e-9b7b-6b90d916716d",
       "iss": "ManInTheMiddle",
-      "sub": "Nick",
+      "sub": "Nick@email.test",
       "type": "ADMIN",
       "iat": 1619524935,
       "exp": 9999999999
@@ -219,8 +219,10 @@ public class AuthControllerTest {
      */
 
     String token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwODFlZDYxMi0yODFhLTQ1MWUtOWI3Yi02YjkwZDkxNjcxNm"
-        + "QiLCJpc3MiOiJNYW5JblRoZU1pZGRsZSIsInN1YiI6Ik5pY2siLCJ0eXBlIjoiQURNSU4iLCJpYXQiOjE2MTk1Mj"
-        + "Q5MzUsImV4cCI6OTk5OTk5OTk5OX0.sVOK-WZt7XkbbIWmI0V-kUw5Eg9A8Kwu6tyrbgUl4D8";
+        + "QiLCJpc3MiOiJNYW5JblRoZU1pZGRsZSIsInN1YiI6Ik5pY2tAZW1haWwudGVzdCIsInR5cGUiOiJBRE1JTiIsIm"
+        + "lhdCI6MTYxOTUyNDkzNSwiZXhwIjo5OTk5OTk5OTk5fQ.1W2bv_0ATtCReydcGpZjl8PXp5q9cPnsR85uLbPyOyA"
+        ;
+
 
     mockMvc
         .perform(
