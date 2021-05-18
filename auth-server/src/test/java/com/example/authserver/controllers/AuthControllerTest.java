@@ -251,7 +251,7 @@ public class AuthControllerTest {
         .perform(
             post("/validate")
                 .header("Authorization", "Bearer: " + token))
-        .andExpect(status().isUnauthorized());
+        .andExpect(status().isInternalServerError());
   }
 
   @Test
