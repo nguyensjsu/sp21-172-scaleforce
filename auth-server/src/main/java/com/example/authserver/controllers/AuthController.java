@@ -1,6 +1,6 @@
 package com.example.authserver.controllers;
 
-import com.example.authserver.AuthProperties;
+import com.example.authserver.config.AuthProperties;
 import com.example.authserver.entities.HaircutUser;
 import com.example.authserver.entities.HaircutUserDetailContainer;
 import com.example.authserver.entities.Role;
@@ -16,10 +16,12 @@ import io.jsonwebtoken.Jws;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -57,7 +59,10 @@ class AuthController {
 
             try {
                 HaircutUserDetailContainer user = (HaircutUserDetailContainer) userService.loadUserByUsername(email);
-                return new ValidateJwtResponse(user.getAuthorities());
+                ArrayList<String> authorities = new ArrayList<>();
+                for (GrantedAuthority s : user.getAuthorities())
+                    authorities.add(s.toString());
+                return new ValidateJwtResponse(email, authorities);
 
             } catch (UsernameNotFoundException e)
             {

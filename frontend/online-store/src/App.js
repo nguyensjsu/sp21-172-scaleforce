@@ -12,6 +12,7 @@ import Signup from './screens/Auth/Signup';
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
 import Appointments from './screens/Appointments';
+import Card from './screens/Card';
 import { getCurrentUser } from './services/auth';
 
 export default function App() {
@@ -40,6 +41,13 @@ export default function App() {
           exact
           path="/appointments"
           component={Appointments}
+          isAuthenticated={isAuthenticated}
+          isVerifying={isVerifying}
+        />
+        <ProtectedRoute
+          exact
+          path="/card"
+          component={Card}
           isAuthenticated={isAuthenticated}
           isVerifying={isVerifying}
         />

@@ -33,6 +33,10 @@ const columns = [
       );
     },
   },
+  {
+    Header: 'Service',
+    accessor: 'col5',
+  },
 ];
 
 const serviceString = {

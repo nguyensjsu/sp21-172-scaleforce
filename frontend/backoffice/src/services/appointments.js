@@ -5,7 +5,8 @@ const API_URL = 'https://api.scaleforce.dev/';
 
 export const fetchAppointments = async () => {
   const validated = await validate();
-  const { Authorization } = validated.config.headers;
+  if (!validated) return;
+  const { Authorization } = validated?.config?.headers;
   if (!Authorization) return;
   try {
     const res = await axios.get(API_URL + 'admin/appointments', {

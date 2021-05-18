@@ -7,6 +7,7 @@ import { logout } from '../services/auth';
 const navigation = [
   { name: 'My appointments', href: '/dashboard' },
   { name: 'Book An Appointment', href: '/appointments' },
+  { name: 'Card', href: '/card' },
 ];
 
 function classNames(...classes) {

@@ -43,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                 .antMatchers("/auth", "/validate").permitAll()
                 // Allow user creation without valid JWT
                 .antMatchers(HttpMethod.POST, "/users").permitAll()
-                // OpenAPI endpoint
+                // OpenAPI endpoint, enable this and springdocs apidocs value to generate docs with make docs command
 //                .antMatchers(HttpMethod.GET, "/v3/api-docs").permitAll()
                 .anyRequest().authenticated()
                 .and()
