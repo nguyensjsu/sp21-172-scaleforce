@@ -1,11 +1,12 @@
 package com.java.backend.controllers;
 
 import com.java.backend.entities.Appointment;
-import com.java.backend.bodies.PatchUserAppointmentRequest;
 import com.java.backend.repositories.AppointmentRepository;
 import com.java.backend.repositories.CardRepository;
+import com.java.backend.requests.PatchUserAppointmentRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -14,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 @RestController
+@Secured({"ROLE_ADMIN", "ROLE_OFFICE", "ROLE_USER"})
 @RequestMapping("/user")
 public class UserController
 {

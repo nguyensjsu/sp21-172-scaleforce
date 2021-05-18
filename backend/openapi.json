@@ -39,6 +39,31 @@
             "type": "string"
           }
         }
+      },
+      "CardPatchRequest": {
+        "type": "object",
+        "properties": {
+          "haircutCount": {
+            "format": "int32",
+            "type": "integer"
+          }
+        }
+      },
+      "Card": {
+        "type": "object",
+        "properties": {
+          "haircutCount": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "id": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "userId": {
+            "type": "string"
+          }
+        }
       }
     }
   },
@@ -52,7 +77,7 @@
   "paths": {
     "/office/appointments": {
       "get": {
-        "operationId": "getAppointmentsByRange_1",
+        "operationId": "getAppointmentsByRange",
         "responses": {
           "200": {
             "description": "OK",
@@ -121,19 +146,26 @@
         ]
       }
     },
-    "/user/appointments": {
-      "get": {
-        "operationId": "getAppointmentsByRange",
+    "/office/card/{id}": {
+      "patch": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CardPatchRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "operationId": "updateCard",
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "*/*": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Appointment"
-                  }
+                  "$ref": "#/components/schemas/Card"
                 }
               }
             }
@@ -142,29 +174,73 @@
         "parameters": [
           {
             "schema": {
-              "type": "string"
+              "format": "int64",
+              "type": "integer"
             },
-            "in": "query",
-            "name": "startDate",
-            "required": true
-          },
-          {
-            "schema": {
-              "type": "string"
-            },
-            "in": "query",
-            "name": "endDate",
+            "in": "path",
+            "name": "id",
             "required": true
           }
         ],
         "tags": [
-          "user-controller"
+          "office-controller"
+        ]
+      },
+      "get": {
+        "operationId": "getCard",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Card"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "format": "int64",
+              "type": "integer"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "tags": [
+          "office-controller"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteCard",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "format": "int64",
+              "type": "integer"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "tags": [
+          "office-controller"
         ]
       }
     },
     "/admin/appointments": {
       "get": {
-        "operationId": "getAppointmentsByRange_2",
+        "operationId": "getAppointmentsByRange_1",
         "responses": {
           "200": {
             "description": "OK",
@@ -200,6 +276,29 @@
         ],
         "tags": [
           "admin-controller"
+        ]
+      }
+    },
+    "/office/cards": {
+      "get": {
+        "operationId": "getAllCards",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Card"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "office-controller"
         ]
       }
     },
@@ -246,7 +345,7 @@
     },
     "/user/appointments/open": {
       "get": {
-        "operationId": "getAllOpenAppointments",
+        "operationId": "getOpenAppointments",
         "responses": {
           "200": {
             "description": "OK",
@@ -262,6 +361,57 @@
             }
           }
         },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "startDate",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "endDate",
+            "required": false
+          }
+        ],
+        "tags": [
+          "user-controller"
+        ]
+      }
+    },
+    "/user/appointments/{id}": {
+      "get": {
+        "operationId": "getOpenAppointmentsById",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Appointment"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
         "tags": [
           "user-controller"
         ]

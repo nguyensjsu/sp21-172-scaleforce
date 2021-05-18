@@ -1,10 +1,13 @@
 package com.java.backend.controllers;
 
 import com.java.backend.entities.Appointment;
+import com.java.backend.entities.Card;
 import com.java.backend.repositories.AppointmentRepository;
 import com.java.backend.repositories.CardRepository;
+import com.java.backend.requests.CardPatchRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -13,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 @RestController
+@Secured({"ROLE_ADMIN", "ROLE_OFFICE"})
 @RequestMapping("/office")
 public class OfficeController
 {
@@ -51,5 +55,38 @@ public class OfficeController
                     String.format("Date format is invalid, correct pattern is %s", dateTimeFormat.toPattern()));
         }
 
+    }
+
+    @GetMapping("/cards")
+    public List<Card> getAllCards()
+    {
+        return cardRepository.findAll();
+    }
+
+    @GetMapping("/card/{id}")
+    public Card getCard(@PathVariable Long id)
+    {
+        return cardRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Card with id %s not found", id)));
+    }
+
+
+    @PatchMapping("/card/{id}")
+    public Card updateCard(@PathVariable Long id, @RequestBody CardPatchRequest input)
+    {
+        return cardRepository.findById(id).map(
+                card -> {
+                    card.setHaircutCount(input.getHaircutCount());
+                    return cardRepository.save(card);
+                })
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Card with id %s not found", id)));
+    }
+
+    @DeleteMapping("/card/{id}")
+    public void deleteCard(@PathVariable Long id)
+    {
+        cardRepository.deleteById(id);
     }
 }

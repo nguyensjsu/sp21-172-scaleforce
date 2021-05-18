@@ -1,7 +1,8 @@
 package com.example.authserver.controllers;
 
-import com.example.authserver.AuthProperties;
+import com.example.authserver.config.AuthProperties;
 import com.example.authserver.entities.HaircutUser;
+import com.example.authserver.entities.HaircutUserDetailContainer;
 import com.example.authserver.entities.Role;
 import com.example.authserver.repositories.UserRepository;
 import com.example.authserver.requests.NewUserRequest;
@@ -15,20 +16,24 @@ import io.jsonwebtoken.Jws;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 class AuthController {
 
     private final UserRepository repository;
+    private final UserService userService;
     private final JwtUtil jwtUtil;
 
-    AuthController(UserRepository repository, AuthProperties authProperties) {
+    AuthController(UserRepository repository, UserService userService, AuthProperties authProperties) {
         this.repository = repository;
+        this.userService = userService;
         this.jwtUtil = new JwtUtil(authProperties, repository);
     }
 
@@ -39,8 +44,6 @@ class AuthController {
         if (haircutUser == null || !userRequest.getPassword().equals(haircutUser.getPassword()))
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
 
-        HashMap<String, String> response = new HashMap<>();
-
         return new GetJwtResponse(jwtUtil.buildJws(haircutUser.getEmail(), haircutUser.getRole()),
                 haircutUser.getId().toString());
     }
@@ -48,11 +51,23 @@ class AuthController {
     @PostMapping("/validate")
     ValidateJwtResponse validateJWT(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth)
     {
-        if (!jwtUtil.validateJwt(auth))
-        {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
-        }
-        return new ValidateJwtResponse();
+            String email = jwtUtil.getClaims(auth).getBody().getSubject();
+            if (email == null)
+            {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
+            }
+
+            try {
+                HaircutUserDetailContainer user = (HaircutUserDetailContainer) userService.loadUserByUsername(email);
+                ArrayList<String> authorities = new ArrayList<>();
+                for (GrantedAuthority s : user.getAuthorities())
+                    authorities.add(s.toString());
+                return new ValidateJwtResponse(email, authorities);
+
+            } catch (UsernameNotFoundException e)
+            {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Valid token yet User not found");
+            }
     }
 
     @GetMapping("/users")

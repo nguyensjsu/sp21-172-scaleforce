@@ -1,4 +1,4 @@
-package com.java.backend.bodies;
+package com.java.backend.requests;
 
 import lombok.Data;
 
