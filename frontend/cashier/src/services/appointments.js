@@ -5,6 +5,7 @@ const API_URL = 'https://api.scaleforce.dev/';
 
 export const fetchAppointments = async () => {
   const validated = await validate();
+  if(!validated) return [];
   const { Authorization } = validated?.config?.headers;
   if (!Authorization) return;
   try {
