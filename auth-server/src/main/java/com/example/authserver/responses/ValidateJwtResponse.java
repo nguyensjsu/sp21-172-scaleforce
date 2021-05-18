@@ -1,19 +1,20 @@
 package com.example.authserver.responses;
 
 import lombok.Data;
-import org.springframework.security.core.GrantedAuthority;
 
-import java.util.Collection;
+import java.util.List;
 
 @Data
 public class ValidateJwtResponse
 {
     private String jwt;
-    private Collection<? extends GrantedAuthority> permissions;
+    private String email;
+    private List<String> permissions;
 
-    public ValidateJwtResponse(Collection<? extends GrantedAuthority> permissions)
+    public ValidateJwtResponse(String email, List<String> permissions)
     {
         jwt = "valid";
+        this.email = email;
         this.permissions = permissions;
     }
 }
