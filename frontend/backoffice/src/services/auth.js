@@ -16,17 +16,25 @@ export const login = async (email, password) => {
 };
 
 export const validate = async () => {
-  const token = JSON.parse(localStorage.getItem('user'));
-  const res = await axios.post(
-    AUTH_URL + 'validate',
-    {},
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+  try {
+    const token = JSON.parse(localStorage.getItem('user'));
+    const res = await axios.post(
+      AUTH_URL + 'validate',
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return res;
+  } catch (e) {
+    if (e.response.status === 500) {
+      logout();
+      console.log('LOGOUT');
     }
-  );
-  return res;
+    return;
+  }
 };
 export const logout = () => {
   localStorage.removeItem('user');

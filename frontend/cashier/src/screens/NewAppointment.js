@@ -7,10 +7,10 @@ import ServicePicker from '../components/ServicePicker';
 import { addAppointment } from '../services/appointments';
 import moment from 'moment';
 
-const NewAppointment = () => {
+const NewAppointment = ({ history }) => {
   const [barber, setBarber] = useState('');
   const [date, setDate] = useState(new Date());
-  const [time, setTime] = useState('1:00AM');
+  const [time, setTime] = useState('1:00AM'); // ;)
   const [service, setService] = useState('TRIM');
 
   async function handleSubmit() {
@@ -23,6 +23,7 @@ const NewAppointment = () => {
       barber,
       booked: null,
     });
+    history.push('appointments');
   }
 
   return (

@@ -29,7 +29,10 @@ export const validate = async () => {
     );
     return res;
   } catch (e) {
-    alert(e);
+    if (e.response.status === 500) {
+      logout();
+      console.log('LOGOUT');
+    }
     return;
   }
 };
