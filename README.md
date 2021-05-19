@@ -1,4 +1,4 @@
-# {project name}
+	# {project name}
 
 ## How to Deploy
 
@@ -6,7 +6,10 @@ See DEPLOYMENT.
 
 ## Cashier App
 
-TODO features implemented
+* Login
+* View all Appointments
+* Create new Appointments
+* Sign Out
 
 ## Back Office Help Desk App
 
@@ -14,7 +17,11 @@ TODO features implemented
 
 ## Online Store App
 
-TODO features implemented
+* User Login
+* View User Appointments
+* Book an Appointment
+* View Card and current number of haircuts
+* Signout
 
 ## REST API
 
