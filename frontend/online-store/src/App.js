@@ -38,8 +38,11 @@ export default function App() {
           isVerifying={isVerifying}
         />
         <ProtectedRoute
-          exact
-          path="/appointments"
+          path={[
+            '/appointments?cancelled=false',
+            '/appointments?cancelled=true',
+            '/appointments',
+          ]}
           component={Appointments}
           isAuthenticated={isAuthenticated}
           isVerifying={isVerifying}
