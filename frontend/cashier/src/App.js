@@ -10,7 +10,6 @@ import Login from './screens/Auth/Login';
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
 import Appointments from './screens/Appointments';
-import Signup from './screens/Auth/Signup';
 import NewAppointment from './screens/NewAppointment';
 import { getCurrentUser } from './services/auth';
 
@@ -54,7 +53,6 @@ export default function App() {
             )
           }
         />
-        <Route path="/signup" component={Signup} />
         <Route path="/" component={isAuthenticated ? Appointments : Login} />
       </Switch>
     </Router>

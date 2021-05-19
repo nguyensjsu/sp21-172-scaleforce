@@ -27,24 +27,28 @@ const NewAppointment = ({ history }) => {
   }
 
   return (
-    <div className="flex justify-center my-20">
-      <div className="p-5">
-        <TextInput
-          label="Barber"
-          type="name"
-          placeholder="Barber Name"
-          onChange={({ target: { value } }) => setBarber(value)}
-        />
-      </div>
-      <div className="">
-        <TimePicker setTime={(time) => setTime(time)} />
-        <DatePicker pickDate={(date) => setDate(date)} />
-      </div>
+    <div className="flex h-screen">
+      <div className="border-4 border-black m-auto">
+        <div className="p-2">
+          <TextInput
+            label="Barber"
+            type="name"
+            placeholder="Barber Name"
+            onChange={({ target: { value } }) => setBarber(value)}
+          />
+        </div>
+        <div className="p-2">
+          <TimePicker setTime={(time) => setTime(time)} />
+          <DatePicker pickDate={(date) => setDate(date)} />
+        </div>
 
-      <div className="p-5">
-        <ServicePicker setService={setService} />
+        <div className="p-2">
+          <ServicePicker setService={setService} />
+        </div>
+        <div className="flex justify-center p-2">
+          <Button label="Submit" variant="primary" onClick={handleSubmit} />
+        </div>
       </div>
-      <Button label="Submit" variant="primary" onClick={handleSubmit} />
     </div>
   );
 };
