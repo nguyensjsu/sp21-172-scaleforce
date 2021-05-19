@@ -45,7 +45,7 @@ const serviceString = {
   CUT_AND_BEARD: 'Haircut and Beard',
 };
 
-const Appointments = () => {
+const Appointments = ({ history }) => {
   const [appointments, setAppointments] = useState([]);
   useEffect(() => {
     getAppointments();
@@ -55,7 +55,9 @@ const Appointments = () => {
     // ADD STRIPE HERE
     if (true) {
       const res = await bookAppointment(aptId);
-      console.log(res);
+      if (res === 'Success') {
+        history.push('dashboard');
+      }
     }
   }
 
