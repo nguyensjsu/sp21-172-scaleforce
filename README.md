@@ -1,4 +1,4 @@
-	# {project name}
+	# {ScaleForce}
 
 ## How to Deploy
 
@@ -13,15 +13,17 @@ See DEPLOYMENT.
 
 ## Back Office Help Desk App
 
+* Login
 * View number of users
 * View user information
 * View number of appointments
 * View all appointments
 * view weekly revenue 
+* Signout
 
 ## Online Store App
 
-* User Login
+* Login
 * View User Appointments
 * Book an Appointment
 * Pay through Stripe
