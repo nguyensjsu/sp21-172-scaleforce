@@ -16,7 +16,7 @@ import Card from './screens/Card';
 import { getCurrentUser } from './services/auth';
 
 export default function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
 
   useEffect(() => {
