@@ -5,6 +5,7 @@ const AUTH_URL = 'https://auth.scaleforce.dev/';
 
 export const fetchUsers = async () => {
   const validated = await validate();
+  if (!validated) return;
   const { Authorization } = validated.config.headers;
   if (!Authorization) return;
   try {
