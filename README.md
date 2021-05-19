@@ -13,13 +13,18 @@ See DEPLOYMENT.
 
 ## Back Office Help Desk App
 
-TODO features implemented
+* View number of users
+* View user information
+* View number of appointments
+* View all appointments
+* view weekly revenue 
 
 ## Online Store App
 
 * User Login
 * View User Appointments
 * Book an Appointment
+* Pay through Stripe
 * View Card and current number of haircuts
 * Signout
 
