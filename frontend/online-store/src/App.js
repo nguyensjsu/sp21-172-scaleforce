@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { useState } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
@@ -10,14 +10,22 @@ import Users from "./screens/Users";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Appointments from "./screens/Appointments";
 import Calendar from "./screens/Calendar";
+import {getCurrentUser} from "./services/auth";
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [isVerifying, setIsVerifying] = useState(false);
 
+  useEffect( () => {
+    setIsVerifying(true);
+    const user = getCurrentUser();
+    setIsAuthenticated(!!user);
+    setIsVerifying(false);
+  }, [isAuthenticated]);
+
   return (
     <Router>
-      {isAuthenticated && <Navbar />}
+      {isAuthenticated && <Navbar onLogout={() => setIsAuthenticated(false)} />}
       <Switch>
         <ProtectedRoute
           exact
@@ -47,7 +55,14 @@ export default function App() {
           isAuthenticated={isAuthenticated}
           isVerifying={isVerifying}
         />
-        <Route path="/login" component={Login} />
+        <Route
+          path="/login"
+          component={() =>
+            isAuthenticated ? (
+              <Redirect to="/"
+            )
+          }
+        />
         <Route path="/signup" component={Signup} />
         <Route path="/" component={isAuthenticated ? Dashboard : Login} />
       </Switch>
