@@ -55,14 +55,7 @@ export default function App() {
           isAuthenticated={isAuthenticated}
           isVerifying={isVerifying}
         />
-        <Route
-          path="/login"
-          component={() =>
-            isAuthenticated ? (
-              <Redirect to="/"
-            )
-          }
-        />
+        <Route path="/login" component={Login} />
         <Route path="/signup" component={Signup} />
         <Route path="/" component={isAuthenticated ? Dashboard : Login} />
       </Switch>
