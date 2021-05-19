@@ -51,7 +51,7 @@ export const bookAppointment = async (aptId) => {
         headers: { Authorization },
       }
     );
-    return res.data;
+    return 'Success';
   } catch (e) {
     console.log(e);
   }

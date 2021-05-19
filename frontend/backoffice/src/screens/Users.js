@@ -12,7 +12,7 @@ const columns = [
     accessor: 'email',
   },
   {
-    Header: 'Appoints',
+    Header: 'Appointments',
     accessor: 'id',
   },
 ];

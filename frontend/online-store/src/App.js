@@ -16,7 +16,7 @@ import Card from './screens/Card';
 import { getCurrentUser } from './services/auth';
 
 export default function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
 
   useEffect(() => {
@@ -38,8 +38,11 @@ export default function App() {
           isVerifying={isVerifying}
         />
         <ProtectedRoute
-          exact
-          path="/appointments"
+          path={[
+            '/appointments?cancelled=false',
+            '/appointments?cancelled=true',
+            '/appointments',
+          ]}
           component={Appointments}
           isAuthenticated={isAuthenticated}
           isVerifying={isVerifying}
