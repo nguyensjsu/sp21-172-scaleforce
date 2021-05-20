@@ -2,16 +2,17 @@ import React from 'react';
 import Button from '../../components/Button';
 import TextInput from '../../components/TextInput';
 import {useForm} from "react-hook-form";
-import {login} from "../../services/auth";
+import {signup} from "../../services/auth";
 
-export default function Signup(onSignup) {
+export default function Signup({onSignup, history}) {
   const {register, handleSubmit} = useForm();
   const onSubmit = async (data) => {
-    const res = await login(data.email,data.password);
+    const res = await signup(data.email,data.password);
     if(res){
       onSignup();
+      history.push('/dashboard');
     }
-  }
+  };
 
   return (
     <div className="flex justify-center my-20">

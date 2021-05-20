@@ -24,6 +24,7 @@ See DEPLOYMENT.
 ## Online Store App
 
 * Login
+* Signup
 * View User Appointments
 * Book an Appointment
 * Pay through Stripe
