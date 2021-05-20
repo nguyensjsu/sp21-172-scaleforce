@@ -16,6 +16,15 @@ export const login = async (email, password) => {
   return res.data.uid;
 };
 
+export const signup = async (email, password) => {
+  const res = await axios.post(AUTH_URL + 'users', {
+    email,
+    password
+  });
+
+  return res.data.uid;
+};
+
 export const validate = async () => {
   try {
     const token = JSON.parse(localStorage.getItem('user'));
