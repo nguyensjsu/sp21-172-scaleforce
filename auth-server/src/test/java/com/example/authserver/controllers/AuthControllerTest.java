@@ -1,10 +1,11 @@
 package com.example.authserver.controllers;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.example.authserver.requests.AuthRequest;
+import com.example.authserver.requests.UserRequest;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Disabled;
@@ -28,15 +29,15 @@ public class AuthControllerTest {
 
   @Test
   void getJWT() throws Exception {
-    AuthRequest authRequest = new AuthRequest();
-    authRequest.setUsername("Nick");
-    authRequest.setPassword("N");
+    UserRequest userRequest = new UserRequest();
+    userRequest.setEmail("Nick@email.test");
+    userRequest.setPassword("N");
 
     mockMvc
         .perform(
             post("/auth")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(authRequest)))
+                .content(objectMapper.writeValueAsString(userRequest)))
         .andExpect(status().isOk())
         .andExpect(jsonPath(("$")).exists())
         .andExpect(jsonPath(("$.jwt")).exists());
@@ -52,42 +53,42 @@ public class AuthControllerTest {
 
   @Test
   void getJWT_invalidUsername() throws Exception {
-    AuthRequest authRequest = new AuthRequest();
-    authRequest.setUsername("Bob");
-    authRequest.setPassword("B");
+    UserRequest userRequest = new UserRequest();
+    userRequest.setEmail("Bob@email.test");
+    userRequest.setPassword("B");
 
     mockMvc.perform(
         post("/auth")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(authRequest)))
+            .content(objectMapper.writeValueAsString(userRequest)))
         .andExpect(status().isUnauthorized());
   }
 
   @Test
   void getJWT_invalidPassword() throws Exception {
-    AuthRequest authRequest = new AuthRequest();
-    authRequest.setUsername("Nick");
-    authRequest.setPassword("A");
+    UserRequest userRequest = new UserRequest();
+    userRequest.setEmail("Nick@email.test");
+    userRequest.setPassword("A");
 
     mockMvc.perform(
         post("/auth")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(authRequest)))
+            .content(objectMapper.writeValueAsString(userRequest)))
         .andExpect(status().isUnauthorized());
   }
 
   @Test
   void validateJWT() throws Exception {
 
-    AuthRequest authRequest = new AuthRequest();
-    authRequest.setUsername("Nick");
-    authRequest.setPassword("N");
+    UserRequest userRequest = new UserRequest();
+    userRequest.setEmail("Nick@email.test");
+    userRequest.setPassword("N");
 
     MvcResult mvcResult = mockMvc
         .perform(
             post("/auth")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(authRequest)))
+                .content(objectMapper.writeValueAsString(userRequest)))
         .andReturn();
 
     JsonNode jsonNode = objectMapper.readTree(mvcResult.getResponse().getContentAsString());
@@ -209,7 +210,7 @@ public class AuthControllerTest {
     {
       "jti": "081ed612-281a-451e-9b7b-6b90d916716d",
       "iss": "ManInTheMiddle",
-      "sub": "Nick",
+      "sub": "Nick@email.test",
       "type": "ADMIN",
       "iat": 1619524935,
       "exp": 9999999999
@@ -218,8 +219,10 @@ public class AuthControllerTest {
      */
 
     String token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwODFlZDYxMi0yODFhLTQ1MWUtOWI3Yi02YjkwZDkxNjcxNm"
-        + "QiLCJpc3MiOiJNYW5JblRoZU1pZGRsZSIsInN1YiI6Ik5pY2siLCJ0eXBlIjoiQURNSU4iLCJpYXQiOjE2MTk1Mj"
-        + "Q5MzUsImV4cCI6OTk5OTk5OTk5OX0.sVOK-WZt7XkbbIWmI0V-kUw5Eg9A8Kwu6tyrbgUl4D8";
+        + "QiLCJpc3MiOiJNYW5JblRoZU1pZGRsZSIsInN1YiI6Ik5pY2tAZW1haWwudGVzdCIsInR5cGUiOiJBRE1JTiIsIm"
+        + "lhdCI6MTYxOTUyNDkzNSwiZXhwIjo5OTk5OTk5OTk5fQ.1W2bv_0ATtCReydcGpZjl8PXp5q9cPnsR85uLbPyOyA"
+        ;
+
 
     mockMvc
         .perform(
@@ -250,6 +253,176 @@ public class AuthControllerTest {
         .perform(
             post("/validate")
                 .header("Authorization", "Bearer: " + token))
-        .andExpect(status().isUnauthorized());
+        .andExpect(status().isInternalServerError());
+  }
+
+  @Test
+  void allUsers_RoleAdmin() throws Exception {
+    UserRequest userRequest = new UserRequest();
+    userRequest.setEmail("Nick@email.test");
+    userRequest.setPassword("N");
+
+    MvcResult mvcResult = mockMvc
+        .perform(
+            post("/auth")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userRequest)))
+        .andReturn();
+
+    JsonNode jsonNode = objectMapper.readTree(mvcResult.getResponse().getContentAsString());
+    String token = jsonNode.get("jwt").asText();
+
+    mockMvc
+        .perform(
+            get("/users")
+                .header("Authorization", "Bearer: " + token))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath(("$[0].id")).value(1))
+        .andExpect(jsonPath(("$[0].email")).value("Nick@email.test"))
+        .andExpect(jsonPath(("$[0].password")).value("N"))
+        .andExpect(jsonPath(("$[0].role")).value("ROLE_ADMIN"))
+        .andExpect(jsonPath(("$[1].id")).value(2))
+        .andExpect(jsonPath(("$[1].email")).value("G@email.test"))
+        .andExpect(jsonPath(("$[1].password")).value("G"))
+        .andExpect(jsonPath(("$[1].role")).value("ROLE_OFFICE"))
+        .andExpect(jsonPath(("$[2].id")).value(3))
+        .andExpect(jsonPath(("$[2].email")).value("Jake@email.test"))
+        .andExpect(jsonPath(("$[2].password")).value("J"))
+        .andExpect(jsonPath(("$[2].role")).value("ROLE_USER"));
+  }
+
+  @Test
+  void allUsers_RoleOffice() throws Exception {
+    UserRequest userRequest = new UserRequest();
+    userRequest.setEmail("G@email.test");
+    userRequest.setPassword("G");
+
+    MvcResult mvcResult = mockMvc
+        .perform(
+            post("/auth")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userRequest)))
+        .andReturn();
+
+    JsonNode jsonNode = objectMapper.readTree(mvcResult.getResponse().getContentAsString());
+    String token = jsonNode.get("jwt").asText();
+
+    mockMvc
+        .perform(
+            get("/users")
+                .header("Authorization", "Bearer: " + token))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath(("$[0].id")).value(1))
+        .andExpect(jsonPath(("$[0].email")).value("Nick@email.test"))
+        .andExpect(jsonPath(("$[0].password")).value("N"))
+        .andExpect(jsonPath(("$[0].role")).value("ROLE_ADMIN"))
+        .andExpect(jsonPath(("$[1].id")).value(2))
+        .andExpect(jsonPath(("$[1].email")).value("G@email.test"))
+        .andExpect(jsonPath(("$[1].password")).value("G"))
+        .andExpect(jsonPath(("$[1].role")).value("ROLE_OFFICE"))
+        .andExpect(jsonPath(("$[2].id")).value(3))
+        .andExpect(jsonPath(("$[2].email")).value("Jake@email.test"))
+        .andExpect(jsonPath(("$[2].password")).value("J"))
+        .andExpect(jsonPath(("$[2].role")).value("ROLE_USER"));
+  }
+
+  @Test
+  void allUsers_RoleUser() throws Exception {
+    UserRequest userRequest = new UserRequest();
+    userRequest.setEmail("Jake@email.test");
+    userRequest.setPassword("J");
+
+    MvcResult mvcResult = mockMvc
+        .perform(
+            post("/auth")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userRequest)))
+        .andReturn();
+
+    JsonNode jsonNode = objectMapper.readTree(mvcResult.getResponse().getContentAsString());
+    String token = jsonNode.get("jwt").asText();
+
+    mockMvc
+        .perform(
+            get("/users")
+                .header("Authorization", "Bearer: " + token))
+        .andExpect(status().isForbidden());
+  }
+
+  @Test
+  void getUserById_RoleAdmin() throws Exception {
+    UserRequest userRequest = new UserRequest();
+    userRequest.setEmail("Nick@email.test");
+    userRequest.setPassword("N");
+
+    MvcResult mvcResult = mockMvc
+        .perform(
+            post("/auth")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userRequest)))
+        .andReturn();
+
+    JsonNode jsonNode = objectMapper.readTree(mvcResult.getResponse().getContentAsString());
+    String token = jsonNode.get("jwt").asText();
+
+    mockMvc
+        .perform(
+            get("/user/1")
+                .header("Authorization", "Bearer: " + token))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath(("$.id")).value(1))
+        .andExpect(jsonPath(("$.email")).value("Nick@email.test"))
+        .andExpect(jsonPath(("$.password")).value("N"))
+        .andExpect(jsonPath(("$.role")).value("ROLE_ADMIN"));
+  }
+
+  @Test
+  void getUserById_RoleOffice() throws Exception {
+    UserRequest userRequest = new UserRequest();
+    userRequest.setEmail("G@email.test");
+    userRequest.setPassword("G");
+
+    MvcResult mvcResult = mockMvc
+        .perform(
+            post("/auth")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userRequest)))
+        .andReturn();
+
+    JsonNode jsonNode = objectMapper.readTree(mvcResult.getResponse().getContentAsString());
+    String token = jsonNode.get("jwt").asText();
+
+    mockMvc
+        .perform(
+            get("/user/1")
+                .header("Authorization", "Bearer: " + token))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath(("$.id")).value(1))
+        .andExpect(jsonPath(("$.email")).value("Nick@email.test"))
+        .andExpect(jsonPath(("$.password")).value("N"))
+        .andExpect(jsonPath(("$.role")).value("ROLE_ADMIN"));
+  }
+
+  @Test
+  void getUserById_RoleUser() throws Exception {
+    UserRequest userRequest = new UserRequest();
+    userRequest.setEmail("Jake@email.test");
+    userRequest.setPassword("J");
+
+    MvcResult mvcResult = mockMvc
+        .perform(
+            post("/auth")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userRequest)))
+        .andReturn();
+
+    JsonNode jsonNode = objectMapper.readTree(mvcResult.getResponse().getContentAsString());
+    String token = jsonNode.get("jwt").asText();
+
+    mockMvc
+        .perform(
+            get("/user/1")
+                .header("Authorization", "Bearer: " + token))
+        .andExpect(status().isForbidden());
   }
 }
