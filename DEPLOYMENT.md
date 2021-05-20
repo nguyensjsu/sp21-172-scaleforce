@@ -40,6 +40,20 @@
 
 - `backend` should now be running on `http://localhost:8080`
 
+#### `stripe server`
+
+- (run `stripe-server`)
+
+- Build, run `backend`:
+
+  ```zsh
+  cd strip-checkout-server
+  npm install
+  node server.js
+  ```
+
+- `stripe-server` should now be running on `http://localhost:80`
+
 ### Front End
 
 ### `backoffice`, `cashier`, and `online-store`
@@ -301,6 +315,14 @@ spec:
 Pretty much the same as `auth-server`, though in relevant scripts, substitute
 `backend` for `auth-server`.
 
+#### `stripe-server`
+
+In order to maintain a free NodeJS deployment and to explore new products we decided to use Heroku for our stripe server since it's an almost boilerplate repo. Our repo is hosted on a heroku git instance which manages our CD.
+
+```bash
+git push heroku master
+```
+
 ##### HTTPS
 
 Provisioning the certificate uses the following script:
@@ -333,4 +355,12 @@ spec:
 
 ### Front End
 
-TODO
+#### All frontend apps
+
+Our frontend apps are built using CRA builder which uses Webpack to compile our JS into a single chunked JS file. After the build is complete we upload our static files to Netlify who delievers free load balancing and asset CDNs for our static JS files.
+
+```zsh
+cd frontend/{APP_NAME}
+yarn install && yarn build
+cd build // Upload to netlify :)
+```
