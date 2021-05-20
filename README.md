@@ -100,7 +100,7 @@ Sample: `GET /office/appointments`
 
 ## Cloud Deployment
 
-<!-- ![](./images/cloud-diagram.png) -->
+![](./images/cloud-diagram.png)
 
 Our deployment largely used Google Cloud Platform, as well as Google Domains and
 Netlify.
