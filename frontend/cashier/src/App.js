@@ -20,7 +20,6 @@ export default function App() {
   useEffect(() => {
     setIsVerifying(true);
     const user = getCurrentUser();
-    console.log('User', user);
     setIsAuthenticated(!!user);
     setIsVerifying(false);
   }, [isAuthenticated]);

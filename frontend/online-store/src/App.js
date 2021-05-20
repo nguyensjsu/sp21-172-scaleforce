@@ -17,7 +17,7 @@ import { getCurrentUser } from './services/auth';
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isVerifying, setIsVerifying] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(true);
 
   useEffect(() => {
     setIsVerifying(true);
@@ -38,9 +38,10 @@ export default function App() {
           isVerifying={isVerifying}
         />
         <ProtectedRoute
+          exact
           path={[
-            '/appointments?cancelled=false',
-            '/appointments?cancelled=true',
+            '/appointments?canceled=false',
+            '/appointments?canceled=true',
             '/appointments',
           ]}
           component={Appointments}
@@ -55,6 +56,7 @@ export default function App() {
           isVerifying={isVerifying}
         />
         <Route
+          exact
           path="/login"
           component={() =>
             isAuthenticated ? (
@@ -64,8 +66,14 @@ export default function App() {
             )
           }
         />
-        <Route path="/signup" component={Signup} />
         <Route
+          exact
+          path="/signup"
+          component={Signup}
+          onSignup={() => setIsAuthenticated(true)}
+        />
+        <Route
+          exact
           path="/"
           component={() =>
             isAuthenticated ? (
