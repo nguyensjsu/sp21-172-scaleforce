@@ -3,6 +3,7 @@ import axios from 'axios';
 const AUTH_URL = 'https://auth.scaleforce.dev/';
 
 export const login = async (email, password) => {
+  console.log('we are here');
   const res = await axios.post(AUTH_URL + 'auth', {
     email,
     password,
@@ -17,12 +18,10 @@ export const login = async (email, password) => {
 };
 
 export const signup = async (email, password) => {
-  const res = await axios.post(AUTH_URL + 'users', {
+  return await axios.post(AUTH_URL + 'users', {
     email,
-    password
+    password,
   });
-
-  return res.data.uid;
 };
 
 export const validate = async () => {
